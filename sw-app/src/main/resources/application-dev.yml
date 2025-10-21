@@ -1,0 +1,26 @@
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1MB      # 单个文件大小
+      max-request-size: 1MB  # 总请求大小（一次上传多个文件）
+  datasource:
+    url: jdbc:mysql://182.254.137.97:3306/sw?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&rewriteBatchedStatements=true
+    username: root
+    password: YYyy0429
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: HikariCP
+      minimum-idle: 5            # 最小空闲连接
+      maximum-pool-size: 30      # 最大连接数（单实例应用，30一般足够）
+      idle-timeout: 300000       # 空闲连接最大存活时间 5分钟
+      max-lifetime: 1800000      # 连接最大生命周期 30分钟（避免MySQL断开）
+      connection-timeout: 30000  # 获取连接最大等待时间 30秒
+      validation-timeout: 5000   # 校验连接可用性超时时间 5秒
+      leak-detection-threshold: 0  # SQL执行超时监控，默认关闭，必要时可开启（如20000ms）
+      connection-test-query: SELECT 1

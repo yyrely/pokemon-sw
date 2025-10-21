@@ -1,0 +1,22 @@
+services:
+  # Spring Boot 应用服务
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pokemon-sw:latest
+    container_name: pokemon-sw
+    ports:
+      - "8088:8088"
+    volumes:
+      - /data/pokemon-sw/file:/data/file
+      - /data/pokemon-sw/logs:/app/logs
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true
+
+

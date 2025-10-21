@@ -1,0 +1,33 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /api
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /v3/api-docs
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1MB      # 单个文件大小
+      max-request-size: 1MB  # 总请求大小（一次上传多个文件）
+
+wx:
+  appId: wx07e21969d32b0cd7
+  appSecret: af7df727b54e59de836cc57d728d24da
+
+file:
+  path: "/data/file/"
+  pattern-prefix: "/file/"
+
+logging:
+  level:
+    com.chuncongcong.sw.mapper: info

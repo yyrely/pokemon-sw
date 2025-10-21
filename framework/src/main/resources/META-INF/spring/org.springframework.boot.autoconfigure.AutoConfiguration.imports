@@ -1,0 +1,6 @@
+com.chuncongcong.framework.config.GlobalExceptionHandler
+com.chuncongcong.framework.config.WebAutoConfiguration
+com.chuncongcong.framework.config.MybatisPlusConfig
+com.chuncongcong.framework.config.JacksonAutoConfiguration
+com.chuncongcong.framework.config.FilterConfiguration
+com.chuncongcong.framework.config.SwaggerAutoConfiguration
