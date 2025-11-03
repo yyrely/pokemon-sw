@@ -71,8 +71,8 @@ public class UploadController {
             "png", new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}
     );
 
-    // 最大文件大小（字节）- 1MB
-    private static final long MAX_FILE_SIZE = (long) 1024 * 1024;
+    // 最大文件大小（字节）- 5MB
+    private static final long MAX_FILE_SIZE = (long) 1024 * 1024 * 5;
     
     // 上传频率限制 - 每用户每分钟最多上传5次
     private static final int MAX_UPLOADS_PER_MINUTE = 5;

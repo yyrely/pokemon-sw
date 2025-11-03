@@ -7,8 +7,8 @@ springdoc:
 spring:
   servlet:
     multipart:
-      max-file-size: 1MB      # 单个文件大小
-      max-request-size: 1MB  # 总请求大小（一次上传多个文件）
+      max-file-size: 5MB      # 单个文件大小
+      max-request-size: 5MB  # 总请求大小（一次上传多个文件）
   datasource:
     url: jdbc:mysql://mysql-p:3306/sw?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&rewriteBatchedStatements=true
     username: root
