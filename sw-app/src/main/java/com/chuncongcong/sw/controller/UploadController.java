@@ -5,8 +5,11 @@ import com.chuncongcong.framework.response.ApiResponse;
 import com.chuncongcong.framework.util.ContextHolder;
 import com.chuncongcong.sw.bean.param.UploadParam;
 import com.chuncongcong.sw.bean.vo.UploadVO;
+import com.chuncongcong.sw.biz.service.UserBizService;
+import com.chuncongcong.sw.entity.UserDO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +26,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -44,6 +48,11 @@ public class UploadController {
 
     @Value("${file.pattern-prefix}")
     private String filePatternPrefix;
+
+    @Resource
+    private UserBizService userBizService;
+
+    private static final String HEAD_IMG = "headImg";
     
     // 允许的文件类型
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList(
@@ -70,7 +79,7 @@ public class UploadController {
     private static final Map<Long, Map<Long, AtomicInteger>> uploadCountMap = new ConcurrentHashMap<>();
 
     @Operation(summary = "文件上传")
-    @PostMapping()
+    @PostMapping("/pic")
     public ApiResponse<UploadVO> upload(@Valid @ModelAttribute UploadParam uploadParam) {
         try {
             // 检查上传频率限制
@@ -83,10 +92,10 @@ public class UploadController {
             // 确保上传目录存在
             String uploadDir = createUploadDirectory(category);
             // 生成唯一文件名
-            String fileName = generateFileName(file.getOriginalFilename());
+            String fileName = generateFileName(file.getOriginalFilename(), category);
             // 保存文件
             Path path = Paths.get(uploadDir, fileName);
-            Files.copy(file.getInputStream(), path);
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             // 生成访问URL
             String accessUrl = generateAccessUrl(category, fileName);
 
@@ -164,14 +173,17 @@ public class UploadController {
         
         // 按日期分组存储
         String dateDir = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        
-        String uploadDir;
+
+        StringBuilder uploadDirBuilder = new StringBuilder(filePath);
         if (StringUtils.hasText(category)) {
-            uploadDir = filePath + category + "/" + dateDir;
+            uploadDirBuilder.append(category);
+            if (!HEAD_IMG.equals(category)) {
+                uploadDirBuilder.append("/").append(dateDir);
+            }
         } else {
-            uploadDir = filePath + dateDir;
+            uploadDirBuilder.append(dateDir);
         }
-        
+        String uploadDir = uploadDirBuilder.toString();
         // 验证最终路径是否在允许的目录范围内
         Path basePath = Paths.get(filePath).normalize().toAbsolutePath();
         Path finalPath = Paths.get(uploadDir).normalize().toAbsolutePath();
@@ -183,7 +195,6 @@ public class UploadController {
         if (!Files.exists(finalPath)) {
             Files.createDirectories(finalPath);
         }
-        
         return uploadDir;
     }
     
@@ -235,8 +246,12 @@ public class UploadController {
     /**
      * 生成唯一文件名
      */
-    private String generateFileName(String originalFilename) {
+    private String generateFileName(String originalFilename, String category) {
         String extension = getFileExtension(originalFilename);
+        if(HEAD_IMG.equals(category)) {
+            UserDO userDO = userBizService.getById(ContextHolder.getUserId());
+            return userDO.getOpenId() + "." + extension;
+        }
         return UUID.randomUUID().toString().replace("-", "") + "." + extension;
     }
 
@@ -297,12 +312,17 @@ public class UploadController {
      */
     private String generateAccessUrl(String category, String fileName) {
         String dateDir = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        
+        StringBuilder path = new StringBuilder(filePatternPrefix);
         if (StringUtils.hasText(category)) {
-            return filePatternPrefix + category + "/" + dateDir + "/" + fileName;
+            path.append(category).append("/");
+            if (!HEAD_IMG.equals(category)) {
+                path.append(dateDir).append("/");
+            }
         } else {
-            return filePatternPrefix + dateDir + "/" + fileName;
+            path.append(dateDir).append("/");
         }
+
+        return path.append(fileName).toString();
     }
 }
 

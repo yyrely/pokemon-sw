@@ -12,4 +12,7 @@ public class UserVO {
     @Schema(description = "用户名")
     private String username;
 
+    @Schema(description = "头像")
+    private String headImgUrl;
+
 }
