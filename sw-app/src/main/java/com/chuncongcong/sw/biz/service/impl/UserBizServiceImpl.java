@@ -33,10 +33,10 @@ public class UserBizServiceImpl implements UserBizService {
 
     @Override
     public WxLoginVO wxLogin(WxLoginParam param) {
-        String code = param.getCode();
-        WxSessionDTO wxSession = wxService.getWxSession(appId, appSecret, code);
-        String openId = wxSession.getOpenid();
-//        String openId = "oJxhc13dsiYUttKvwF5GHrdorYiI";
+//        String code = param.getCode();
+//        WxSessionDTO wxSession = wxService.getWxSession(appId, appSecret, code);
+//        String openId = wxSession.getOpenid();
+        String openId = "oJxhc13dsiYUttKvwF5GHrdorYiI";
 
         UserDO user = userService.getByOpenId(openId);
         if (Objects.isNull( user)) {

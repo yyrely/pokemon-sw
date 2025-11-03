@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class UserVO {
 
-    @Schema(description = "登录token")
+    @Schema(description = "id")
     private Long id;
 
     @Schema(description = "用户名")
