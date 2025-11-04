@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chuncongcong.sw.mapper.UserItemMapper">
+
+
+    <select id="maxTop" resultType="com.chuncongcong.sw.bean.vo.TopVO">
+        SELECT
+            user_id,
+            COUNT( item_id ) collect_count,
+            SUM( max_collect_price ) AS collect_price
+        FROM
+        (
+            SELECT
+                user_id,
+                item_id,
+                MAX( collect_price ) AS max_collect_price
+            FROM sw_user_item
+            WHERE
+                deleted = 0
+                AND collect_price &lt; 2000
+            GROUP BY user_id, item_id
+        ) AS t
+        GROUP BY user_id
+        <if test="itemSize != null">
+            HAVING COUNT( item_id ) = #{itemSize}
+        </if>
+        ORDER BY collect_price DESC
+        LIMIT 0,10
+    </select>
+    <select id="minTop" resultType="com.chuncongcong.sw.bean.vo.TopVO">
+        SELECT
+            user_id,
+            COUNT( item_id ) collect_count,
+            SUM( min_collect_price ) AS collect_price
+        FROM
+        (
+            SELECT
+                user_id,
+                item_id,
+                MIN( collect_price ) AS min_collect_price
+            FROM sw_user_item
+            WHERE
+                deleted = 0
+            GROUP BY user_id, item_id
+        ) AS t
+        GROUP BY user_id
+        <if test="itemSize != null">
+            HAVING COUNT( item_id ) = #{itemSize}
+        </if>
+        ORDER BY collect_price ASC
+        LIMIT 0,10
+    </select>
+</mapper>

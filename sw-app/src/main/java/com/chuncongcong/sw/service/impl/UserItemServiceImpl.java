@@ -1,6 +1,7 @@
 package com.chuncongcong.sw.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.entity.UserItemDO;
 import com.chuncongcong.sw.mapper.UserItemMapper;
 import com.chuncongcong.sw.service.UserItemService;
@@ -21,5 +22,15 @@ public class UserItemServiceImpl extends ServiceImpl<UserItemMapper, UserItemDO>
     @Override
     public List<UserItemDO> listByUserId(Long userId) {
         return this.lambdaQuery().eq(UserItemDO::getUserId, userId).list();
+    }
+
+    @Override
+    public List<TopVO> maxTop(int itemSize) {
+        return this.baseMapper.maxTop(itemSize);
+    }
+
+    @Override
+    public List<TopVO> minTop(int itemSize) {
+        return this.baseMapper.minTop(itemSize);
     }
 }

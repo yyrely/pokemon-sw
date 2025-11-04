@@ -9,13 +9,16 @@ import com.chuncongcong.sw.bean.param.UserItemParam;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.ReginItemCountVO;
+import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.biz.service.ItemBizService;
 import com.chuncongcong.sw.entity.ItemDO;
 import com.chuncongcong.sw.entity.ItemInfoDO;
+import com.chuncongcong.sw.entity.UserDO;
 import com.chuncongcong.sw.entity.UserItemDO;
 import com.chuncongcong.sw.service.ItemInfoService;
 import com.chuncongcong.sw.service.ItemService;
 import com.chuncongcong.sw.service.UserItemService;
+import com.chuncongcong.sw.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +40,8 @@ public class ItemBizServiceImpl implements ItemBizService {
     private UserItemService userItemService;
     @Resource
     private ItemInfoService itemInfoService;
+    @Resource
+    private UserService userService;
 
     @Override
     public List<ItemDO> list(ItemParam param) {
@@ -200,6 +205,34 @@ public class ItemBizServiceImpl implements ItemBizService {
         }
         List<ItemInfoDO> itemInfoDOList = itemInfoService.listByItemId(param.getId());
         return BeanUtil.copyToList(itemInfoDOList, ItemInfoVO.class);
+    }
+
+    @Override
+    public List<TopVO> maxTop() {
+        List<ItemDO> itemDOS = itemService.listByRegionId(null);
+        List<TopVO> topVOS = userItemService.maxTop(itemDOS.size());
+        List<Long> userIds = topVOS.stream().map(TopVO::getUserId).toList();
+        topFill(userIds, topVOS);
+        return topVOS;
+    }
+
+    @Override
+    public List<TopVO> minTop() {
+        List<ItemDO> itemDOS = itemService.listByRegionId(null);
+        List<TopVO> topVOS = userItemService.minTop(itemDOS.size());
+        List<Long> userIds = topVOS.stream().map(TopVO::getUserId).toList();
+        topFill(userIds, topVOS);
+        return topVOS;
+    }
+
+    private void topFill(List<Long> userIds, List<TopVO> topVOS) {
+        List<UserDO> userDOS = userService.listByIds(userIds);
+        Map<Long, UserDO> userDOMap = userDOS.stream().collect(Collectors.toMap(UserDO::getId, Function.identity()));
+        topVOS.forEach(vo -> {
+            UserDO userDO = userDOMap.get(vo.getUserId());
+            vo.setUsername(userDO.getUsername());
+            vo.setHeadImgUrl(userDO.getHeadImgUrl());
+        });
     }
 }
 

@@ -5,6 +5,7 @@ import com.chuncongcong.sw.bean.param.UserItemParam;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.ReginItemCountVO;
+import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.entity.ItemDO;
 import com.chuncongcong.sw.entity.UserItemDO;
 
@@ -31,5 +32,8 @@ public interface ItemBizService {
 
     List<ItemInfoVO> infoList(ItemParam param);
 
+    List<TopVO> maxTop();
+
+    List<TopVO> minTop();
 
 }

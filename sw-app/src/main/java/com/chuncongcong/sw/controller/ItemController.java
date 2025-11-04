@@ -51,40 +51,7 @@ public class ItemController {
         return ApiListResponse.success(itemBizService.listUserFirst(param));
     }
 
-    @Operation(summary = "查询用户已收集的物品列表")
-    @PostMapping("/user/collected")
-    public ApiListResponse<ItemVO> listCollectedItems() {
-        return ApiListResponse.success(itemBizService.listItemsWithCollectStatus(true));
-    }
-
-    @Operation(summary = "查询用户未收集的物品列表")
-    @PostMapping("/user/uncollected")
-    public ApiListResponse<ItemVO> listUnCollectedItems() {
-        return ApiListResponse.success(itemBizService.listItemsWithCollectStatus(false));
-    }
-
-    @Operation(summary = "用户收集记录列表")
-    @PostMapping("/user/log/list")
-    public ApiListResponse<UserItemVO> userList(@RequestBody ItemParam param) {
-        List<UserItemDO> userItemDOList = itemBizService.userList(param);
-        return ApiListResponse.success(BeanUtil.copyToList(userItemDOList, UserItemVO.class));
-    }
-
-    @Operation(summary = "用户物品收集新增更新")
-    @PostMapping("/user/log/saveOrUpdate")
-    public ApiResponse<Void> userSaveOrUpdate(@RequestBody UserItemParam param) {
-        itemBizService.userSaveOrUpdate(param);
-        return ApiResponse.success();
-    }
-
-    @Operation(summary = "用户物品收集删除")
-    @PostMapping("/user/log/delete")
-    public ApiResponse<Void> userDelete(@RequestBody UserItemParam param) {
-        itemBizService.userDelete(param);
-        return ApiResponse.success();
-    }
-
-    @Operation(summary = "物品信息列表")
+    @Operation(summary = "物品资讯列表")
     @PostMapping("/info/list")
     public ApiListResponse<ItemInfoVO> infoList(@RequestBody ItemParam param) {
         return ApiListResponse.success(itemBizService.infoList(param));
