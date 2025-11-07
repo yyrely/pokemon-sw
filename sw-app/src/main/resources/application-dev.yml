@@ -10,7 +10,7 @@ spring:
       max-file-size: 1MB      # 单个文件大小
       max-request-size: 1MB  # 总请求大小（一次上传多个文件）
   datasource:
-    url: jdbc:mysql://182.254.137.97:3306/sw?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&rewriteBatchedStatements=true
+    url: jdbc:mysql://182.254.137.97:3306/sw_dev?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&rewriteBatchedStatements=true
     username: root
     password: YYyy0429
     driver-class-name: com.mysql.cj.jdbc.Driver

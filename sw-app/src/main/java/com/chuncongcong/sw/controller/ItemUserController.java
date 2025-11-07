@@ -5,13 +5,11 @@ import com.chuncongcong.framework.response.ApiListResponse;
 import com.chuncongcong.framework.response.ApiResponse;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
-import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.bean.vo.UserItemVO;
 import com.chuncongcong.sw.biz.service.ItemBizService;
-import com.chuncongcong.sw.entity.ItemDO;
-import com.chuncongcong.sw.entity.UserItemDO;
+import com.chuncongcong.sw.entity.UserItemCollectDO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -23,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "物品管理")
+@Tag(name = "用户物品管理")
 @Slf4j
 @RestController
 @RequestMapping("/item/user")
@@ -47,8 +45,8 @@ public class ItemUserController {
     @Operation(summary = "用户收集记录列表")
     @PostMapping("/log/list")
     public ApiListResponse<UserItemVO> userList(@RequestBody ItemParam param) {
-        List<UserItemDO> userItemDOList = itemBizService.userList(param);
-        return ApiListResponse.success(BeanUtil.copyToList(userItemDOList, UserItemVO.class));
+        List<UserItemCollectDO> UserItemCollectDOList = itemBizService.userList(param);
+        return ApiListResponse.success(BeanUtil.copyToList(UserItemCollectDOList, UserItemVO.class));
     }
 
     @Operation(summary = "用户物品收集新增更新")

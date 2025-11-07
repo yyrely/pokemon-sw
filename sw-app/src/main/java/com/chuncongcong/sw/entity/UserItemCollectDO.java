@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-@TableName("sw_user_item")
+@TableName("sw_user_item_collect")
 @EqualsAndHashCode(callSuper = true)
-public class UserItemDO extends BaseDO {
+public class UserItemCollectDO extends BaseDO {
 
     /**
      * 用户ID

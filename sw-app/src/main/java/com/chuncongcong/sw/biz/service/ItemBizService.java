@@ -7,7 +7,7 @@ import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.ReginItemCountVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.entity.ItemDO;
-import com.chuncongcong.sw.entity.UserItemDO;
+import com.chuncongcong.sw.entity.UserItemCollectDO;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ public interface ItemBizService {
 
     List<ItemVO> listItemsWithCollectStatus(Boolean collectStatus);
 
-    List<UserItemDO> userList(ItemParam param);
+    List<UserItemCollectDO> userList(ItemParam param);
 
     Map<Long, ReginItemCountVO> userCountByRegions(List<Long> regionIdList);
 

@@ -14,10 +14,10 @@ import com.chuncongcong.sw.biz.service.ItemBizService;
 import com.chuncongcong.sw.entity.ItemDO;
 import com.chuncongcong.sw.entity.ItemInfoDO;
 import com.chuncongcong.sw.entity.UserDO;
-import com.chuncongcong.sw.entity.UserItemDO;
+import com.chuncongcong.sw.entity.UserItemCollectDO;
 import com.chuncongcong.sw.service.ItemInfoService;
 import com.chuncongcong.sw.service.ItemService;
-import com.chuncongcong.sw.service.UserItemService;
+import com.chuncongcong.sw.service.UserItemCollectService;
 import com.chuncongcong.sw.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class ItemBizServiceImpl implements ItemBizService {
     @Resource
     private ItemService itemService;
     @Resource
-    private UserItemService userItemService;
+    private UserItemCollectService userItemCollectService;
     @Resource
     private ItemInfoService itemInfoService;
     @Resource
@@ -65,19 +65,19 @@ public class ItemBizServiceImpl implements ItemBizService {
 
         List<ItemVO> itemVOS = BeanUtil.copyToList(itemDOList, ItemVO.class);
         List<Long> itemIds = itemVOS.stream().map(ItemVO::getId).toList();
-        List<UserItemDO> userItemDOList = userItemService.listByUserIdAndItemIdList(ContextHolder.getUserId(), itemIds);
-        if (userItemDOList.isEmpty()) {
+        List<UserItemCollectDO> userItemCollectDOS = userItemCollectService.listByUserIdAndItemIdList(ContextHolder.getUserId(), itemIds);
+        if (userItemCollectDOS.isEmpty()) {
             return itemVOS;
         }
-        Map<Long, UserItemDO> userItemDOMap = getUserItemMinPriceMap(userItemDOList);
+        Map<Long, UserItemCollectDO> UserItemCollectDOMap = getUserItemMinPriceMap(userItemCollectDOS);
         List<ItemVO> matched = new ArrayList<>();
         List<ItemVO> unmatched = new ArrayList<>();
 
         for (ItemVO vo : itemVOS) {
-            UserItemDO userItemDO = userItemDOMap.get(vo.getId());
-            if (Objects.nonNull(userItemDO)) {
+            UserItemCollectDO UserItemCollectDO = UserItemCollectDOMap.get(vo.getId());
+            if (Objects.nonNull(UserItemCollectDO)) {
                 vo.setCollect(true);
-                vo.setMinCollectPrice(userItemDO.getCollectPrice());
+                vo.setMinCollectPrice(UserItemCollectDO.getCollectPrice());
                 matched.add(vo);
             } else {
                 unmatched.add(vo);
@@ -92,23 +92,23 @@ public class ItemBizServiceImpl implements ItemBizService {
 
     @Override
     public List<ItemVO> listItemsWithCollectStatus(Boolean collectStatus) {
-        List<UserItemDO> userItemDOList = userItemService.listByUserId(ContextHolder.getUserId());
-        Map<Long, UserItemDO> userItemDOMap = new HashMap<>();
-        if (CollUtil.isNotEmpty(userItemDOList)) {
-            userItemDOMap = getUserItemMinPriceMap(userItemDOList);
+        List<UserItemCollectDO> userItemCollectDOList = userItemCollectService.listByUserId(ContextHolder.getUserId());
+        Map<Long, UserItemCollectDO> userItemCollectDOMap = new HashMap<>();
+        if (CollUtil.isNotEmpty(userItemCollectDOList)) {
+            userItemCollectDOMap = getUserItemMinPriceMap(userItemCollectDOList);
         }
 
         List<ItemDO> itemDOS = itemService.listByRegionId(null);
         List<ItemVO> itemVOS = new ArrayList<>();
         for (ItemDO itemDO : itemDOS) {
             ItemVO vo = BeanUtil.toBean(itemDO, ItemVO.class);
-            UserItemDO userItemDO = userItemDOMap.get(itemDO.getId());
-            if (Boolean.TRUE.equals(collectStatus) && Objects.nonNull(userItemDO)) {
+            UserItemCollectDO userItemCollectDO = userItemCollectDOMap.get(itemDO.getId());
+            if (Boolean.TRUE.equals(collectStatus) && Objects.nonNull(userItemCollectDO)) {
                 vo.setCollect(true);
-                vo.setMinCollectPrice(userItemDO.getCollectPrice());
+                vo.setMinCollectPrice(userItemCollectDO.getCollectPrice());
                 itemVOS.add(vo);
             }
-            if (Boolean.FALSE.equals(collectStatus) && Objects.isNull(userItemDO)) {
+            if (Boolean.FALSE.equals(collectStatus) && Objects.isNull(userItemCollectDO)) {
                 vo.setCollect(false);
                 itemVOS.add(vo);
             }
@@ -116,24 +116,24 @@ public class ItemBizServiceImpl implements ItemBizService {
         return itemVOS;
     }
 
-    private Map<Long, UserItemDO> getUserItemMinPriceMap(List<UserItemDO> userItemDOList) {
-        return userItemDOList.stream()
+    private Map<Long, UserItemCollectDO> getUserItemMinPriceMap(List<UserItemCollectDO> userItemCollectDOList) {
+        return userItemCollectDOList.stream()
                 .collect(Collectors.toMap(
-                        UserItemDO::getItemId,
+                        UserItemCollectDO::getItemId,
                         Function.identity(),
                         BinaryOperator.minBy(Comparator.comparing(
-                                UserItemDO::getCollectPrice,
+                                UserItemCollectDO::getCollectPrice,
                                 Comparator.nullsLast(BigDecimal::compareTo)
                         ))
                 ));
     }
 
     @Override
-    public List<UserItemDO> userList(ItemParam param) {
+    public List<UserItemCollectDO> userList(ItemParam param) {
         if (Objects.isNull(param.getId())) {
             throw ServiceException.instance(PARAM_ERROR);
         }
-        return userItemService.listByUserIdAndItemIdList(ContextHolder.getUserId(), Collections.singletonList(param.getId()));
+        return userItemCollectService.listByUserIdAndItemIdList(ContextHolder.getUserId(), Collections.singletonList(param.getId()));
     }
 
     @Override
@@ -149,8 +149,8 @@ public class ItemBizServiceImpl implements ItemBizService {
         // 用户收藏
         List<Long> allItemIds = allItemList.stream().map(ItemDO::getId).toList();
         Long userId = ContextHolder.getUserId();
-        List<UserItemDO> userItemList = userItemService.listByUserIdAndItemIdList(userId, allItemIds);
-        Map<Long, List<UserItemDO>> userItemMap = userItemList.stream().collect(Collectors.groupingBy(UserItemDO::getItemId));
+        List<UserItemCollectDO> userItemList = userItemCollectService.listByUserIdAndItemIdList(userId, allItemIds);
+        Map<Long, List<UserItemCollectDO>> userItemMap = userItemList.stream().collect(Collectors.groupingBy(UserItemCollectDO::getItemId));
 
         // 针对每个 region 计算
         Map<Long, ReginItemCountVO> result = new HashMap<>();
@@ -163,16 +163,16 @@ public class ItemBizServiceImpl implements ItemBizService {
 
             if (!regionItems.isEmpty()) {
                 List<Long> regionItemIds = regionItems.stream().map(ItemDO::getId).toList();
-                List<UserItemDO> regionUserItems = regionItemIds.stream()
+                List<UserItemCollectDO> regionUserItems = regionItemIds.stream()
                         .flatMap(id -> userItemMap.getOrDefault(id, Collections.emptyList()).stream())
                         .toList();
 
-                vo.setCollectCount((int) regionUserItems.stream().map(UserItemDO::getItemId).distinct().count());
+                vo.setCollectCount((int) regionUserItems.stream().map(UserItemCollectDO::getItemId).distinct().count());
                 vo.setUnCollectCount(vo.getCount() - vo.getCollectCount());
                 vo.setCollectRate(BigDecimal.valueOf(vo.getCollectCount()).divide(BigDecimal.valueOf(vo.getCount()), 4, RoundingMode.HALF_UP));
                 vo.setCollectNumber(regionUserItems.size());
                 vo.setCollectPriceTotal(regionUserItems.stream()
-                        .map(UserItemDO::getCollectPrice)
+                        .map(UserItemCollectDO::getCollectPrice)
                         .filter(Objects::nonNull)
                         .reduce(BigDecimal::add)
                         .orElse(BigDecimal.ZERO));
@@ -185,9 +185,9 @@ public class ItemBizServiceImpl implements ItemBizService {
 
     @Override
     public void userSaveOrUpdate(UserItemParam param) {
-        UserItemDO userItemDO = BeanUtil.copyProperties(param, UserItemDO.class);
-        userItemDO.setUserId(ContextHolder.getUserId());
-        userItemService.saveOrUpdate(userItemDO);
+        UserItemCollectDO userItemCollectDO = BeanUtil.copyProperties(param, UserItemCollectDO.class);
+        userItemCollectDO.setUserId(ContextHolder.getUserId());
+        userItemCollectService.saveOrUpdate(userItemCollectDO);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class ItemBizServiceImpl implements ItemBizService {
         if (Objects.isNull(param.getId())) {
             throw ServiceException.instance(PARAM_ERROR);
         }
-        userItemService.removeById(param.getId());
+        userItemCollectService.removeById(param.getId());
     }
 
     @Override
@@ -210,7 +210,7 @@ public class ItemBizServiceImpl implements ItemBizService {
     @Override
     public List<TopVO> maxTop() {
         List<ItemDO> itemDOS = itemService.listByRegionId(null);
-        List<TopVO> topVOS = userItemService.maxTop(itemDOS.size());
+        List<TopVO> topVOS = userItemCollectService.maxTop(itemDOS.size());
         List<Long> userIds = topVOS.stream().map(TopVO::getUserId).toList();
         topFill(userIds, topVOS);
         return topVOS;
@@ -219,7 +219,7 @@ public class ItemBizServiceImpl implements ItemBizService {
     @Override
     public List<TopVO> minTop() {
         List<ItemDO> itemDOS = itemService.listByRegionId(null);
-        List<TopVO> topVOS = userItemService.minTop(itemDOS.size());
+        List<TopVO> topVOS = userItemCollectService.minTop(itemDOS.size());
         List<Long> userIds = topVOS.stream().map(TopVO::getUserId).toList();
         topFill(userIds, topVOS);
         return topVOS;
