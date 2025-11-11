@@ -45,8 +45,7 @@ public class ItemUserController {
     @Operation(summary = "用户收集记录列表")
     @PostMapping("/log/list")
     public ApiListResponse<UserItemVO> userList(@RequestBody ItemParam param) {
-        List<UserItemCollectDO> UserItemCollectDOList = itemBizService.userList(param);
-        return ApiListResponse.success(BeanUtil.copyToList(UserItemCollectDOList, UserItemVO.class));
+        return ApiListResponse.success(itemBizService.userList(param));
     }
 
     @Operation(summary = "用户物品收集新增更新")

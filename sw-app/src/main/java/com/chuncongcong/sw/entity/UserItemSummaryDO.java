@@ -23,7 +23,7 @@ public class UserItemSummaryDO extends BaseDO {
     /**
      * 收集状态
      */
-    private Integer collectStatus;
+    private Boolean collectStatus;
 
     /**
      * 收集类型

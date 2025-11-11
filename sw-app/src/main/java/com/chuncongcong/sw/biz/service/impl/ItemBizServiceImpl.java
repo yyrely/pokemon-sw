@@ -2,29 +2,51 @@ package com.chuncongcong.sw.biz.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.json.JSONUtil;
 import com.chuncongcong.framework.exception.ServiceException;
 import com.chuncongcong.framework.util.ContextHolder;
+import com.chuncongcong.sw.bean.enums.ItemTypeEnum;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.ReginItemCountVO;
+import com.chuncongcong.sw.bean.vo.SubItemVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
+import com.chuncongcong.sw.bean.vo.UserItemVO;
 import com.chuncongcong.sw.biz.service.ItemBizService;
 import com.chuncongcong.sw.entity.ItemDO;
 import com.chuncongcong.sw.entity.ItemInfoDO;
+import com.chuncongcong.sw.entity.SubItemDO;
 import com.chuncongcong.sw.entity.UserDO;
 import com.chuncongcong.sw.entity.UserItemCollectDO;
+import com.chuncongcong.sw.entity.UserItemSummaryDO;
+import com.chuncongcong.sw.entity.UserSubItemCollectDO;
 import com.chuncongcong.sw.service.ItemInfoService;
 import com.chuncongcong.sw.service.ItemService;
+import com.chuncongcong.sw.service.SubItemService;
 import com.chuncongcong.sw.service.UserItemCollectService;
+import com.chuncongcong.sw.service.UserItemSummaryService;
 import com.chuncongcong.sw.service.UserService;
+import com.chuncongcong.sw.service.UserSubItemCollectService;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,9 +59,15 @@ public class ItemBizServiceImpl implements ItemBizService {
     @Resource
     private ItemService itemService;
     @Resource
-    private UserItemCollectService userItemCollectService;
+    private SubItemService subItemService;
     @Resource
     private ItemInfoService itemInfoService;
+    @Resource
+    private UserItemCollectService userItemCollectService;
+    @Resource
+    private UserSubItemCollectService userSubItemCollectService;
+    @Resource
+    private UserItemSummaryService userItemSummaryService;
     @Resource
     private UserService userService;
 
@@ -57,6 +85,36 @@ public class ItemBizServiceImpl implements ItemBizService {
     }
 
     @Override
+    public ItemVO infoHasCollect(ItemParam param) {
+        ItemDO itemDO = info(param);
+        ItemVO itemVO = BeanUtil.toBean(itemDO, ItemVO.class);
+        List<SubItemDO> subItemDOS = subItemService.listByItemId(itemDO.getId());
+        List<SubItemVO> subItemList = new ArrayList<>();
+        for (SubItemDO subItemDO : subItemDOS) {
+            SubItemVO subItemVO = BeanUtil.toBean(subItemDO, SubItemVO.class);
+            subItemList.add(subItemVO);
+        }
+        itemVO.setSubItemList(subItemList);
+
+        UserItemSummaryDO userItemSummaryDO = userItemSummaryService.getByUserIdAndItemId(ContextHolder.getUserId(), itemDO.getId());
+        if(Objects.nonNull(userItemSummaryDO)) {
+            Set<Long> subItemIdListSet = new HashSet<>();
+            if(CharSequenceUtil.isNotEmpty(userItemSummaryDO.getSubItemIdList())) {
+                subItemIdListSet = new HashSet<>(JSONUtil.parseArray(userItemSummaryDO.getSubItemIdList()).toList(Long.class));
+            }
+            for (SubItemVO subItemVO : subItemList) {
+                if(Boolean.TRUE.equals(userItemSummaryDO.getCollectStatus()) && ItemTypeEnum.ITEM.getCode().equals(userItemSummaryDO.getCollectType())) {
+                    subItemVO.setCollect(Boolean.TRUE);
+                } else {
+                    subItemVO.setCollect(subItemIdListSet.contains(subItemVO.getId()));
+                }
+            }
+            itemVO.setCollect(userItemSummaryDO.getCollectStatus());
+        }
+        return itemVO;
+    }
+
+    @Override
     public List<ItemVO> listUserFirst(ItemParam param) {
         List<ItemDO> itemDOList = list(param);
         if (itemDOList.isEmpty()) {
@@ -65,19 +123,19 @@ public class ItemBizServiceImpl implements ItemBizService {
 
         List<ItemVO> itemVOS = BeanUtil.copyToList(itemDOList, ItemVO.class);
         List<Long> itemIds = itemVOS.stream().map(ItemVO::getId).toList();
-        List<UserItemCollectDO> userItemCollectDOS = userItemCollectService.listByUserIdAndItemIdList(ContextHolder.getUserId(), itemIds);
-        if (userItemCollectDOS.isEmpty()) {
+
+        List<UserItemSummaryDO> userItemSummaryDOS = userItemSummaryService.listByUserIdAndItemIds(ContextHolder.getUserId(), itemIds);
+        if (userItemSummaryDOS.isEmpty()) {
             return itemVOS;
         }
-        Map<Long, UserItemCollectDO> UserItemCollectDOMap = getUserItemMinPriceMap(userItemCollectDOS);
+        Map<Long, UserItemSummaryDO> userItemSummaryDOMap = userItemSummaryDOS.stream().collect(Collectors.toMap(UserItemSummaryDO::getItemId, Function.identity()));
         List<ItemVO> matched = new ArrayList<>();
         List<ItemVO> unmatched = new ArrayList<>();
 
         for (ItemVO vo : itemVOS) {
-            UserItemCollectDO UserItemCollectDO = UserItemCollectDOMap.get(vo.getId());
-            if (Objects.nonNull(UserItemCollectDO)) {
+            UserItemSummaryDO userItemSummaryDO = userItemSummaryDOMap.get(vo.getId());
+            if (Objects.nonNull(userItemSummaryDO) && Boolean.TRUE.equals(userItemSummaryDO.getCollectStatus())) {
                 vo.setCollect(true);
-                vo.setMinCollectPrice(UserItemCollectDO.getCollectPrice());
                 matched.add(vo);
             } else {
                 unmatched.add(vo);
@@ -129,11 +187,26 @@ public class ItemBizServiceImpl implements ItemBizService {
     }
 
     @Override
-    public List<UserItemCollectDO> userList(ItemParam param) {
+    public List<UserItemVO> userList(ItemParam param) {
         if (Objects.isNull(param.getId())) {
             throw ServiceException.instance(PARAM_ERROR);
         }
-        return userItemCollectService.listByUserIdAndItemIdList(ContextHolder.getUserId(), Collections.singletonList(param.getId()));
+        ItemDO itemDO = itemService.getById(param.getId());
+        List<SubItemDO> subItemDOS = subItemService.listByItemId(itemDO.getId());
+        List<UserItemCollectDO> userItemCollectDOS = userItemCollectService.listByUserIdAndItemIdList(ContextHolder.getUserId(), Collections.singletonList(param.getId()));
+        if(CollUtil.isEmpty(subItemDOS)) {
+            return BeanUtil.copyToList(userItemCollectDOS, UserItemVO.class);
+        }
+        Map<Long, String> subItemVOMap = subItemDOS.stream().collect(Collectors.toMap(SubItemDO::getId, SubItemDO::getName));
+
+        List<UserItemVO> userItemVOS = new ArrayList<>(Optional.ofNullable(BeanUtil.copyToList(userItemCollectDOS, UserItemVO.class)).orElse(List.of())
+                .stream().peek(vo -> vo.setName("整盒")).toList());
+        List<UserSubItemCollectDO> userSubItemCollectDOS = userSubItemCollectService.listByUserIdAndItemId(ContextHolder.getUserId(), param.getId());
+        List<UserItemVO> userSubItemVOS = Optional.ofNullable(BeanUtil.copyToList(userSubItemCollectDOS, UserItemVO.class)).orElse(List.of())
+                .stream().peek(vo -> vo.setName(subItemVOMap.get(vo.getSubItemId()))).toList();
+        userItemVOS.addAll(userSubItemVOS);
+        userItemVOS.sort(Comparator.comparing(UserItemVO::getCollectDate).reversed());
+        return userItemVOS;
     }
 
     @Override
@@ -184,10 +257,69 @@ public class ItemBizServiceImpl implements ItemBizService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void userSaveOrUpdate(UserItemParam param) {
-        UserItemCollectDO userItemCollectDO = BeanUtil.copyProperties(param, UserItemCollectDO.class);
-        userItemCollectDO.setUserId(ContextHolder.getUserId());
-        userItemCollectService.saveOrUpdate(userItemCollectDO);
+        Long id = param.getId();
+        if(ItemTypeEnum.ITEM.getCode().equals(param.getItemType())) {
+            UserItemCollectDO userItemCollectDO = BeanUtil.copyProperties(param, UserItemCollectDO.class);
+            userItemCollectDO.setUserId(ContextHolder.getUserId());
+            userItemCollectService.saveOrUpdate(userItemCollectDO);
+            if (Objects.isNull(id)) {
+                itemCollectSummary(userItemCollectDO);
+            }
+        } else if(ItemTypeEnum.SUB_ITEM.getCode().equals(param.getItemType())) {
+            UserSubItemCollectDO userItemCollectDO = BeanUtil.copyProperties(param, UserSubItemCollectDO.class);
+            userItemCollectDO.setUserId(ContextHolder.getUserId());
+            userSubItemCollectService.saveOrUpdate(userItemCollectDO);
+            if (Objects.isNull(id)) {
+                subItemCollectSummary(userItemCollectDO);
+            }
+        }
+    }
+
+    private void subItemCollectSummary(UserSubItemCollectDO userItemCollectDO) {
+        UserItemSummaryDO userItemSummaryDO = userItemSummaryService.getByUserIdAndItemId(userItemCollectDO.getUserId(), userItemCollectDO.getItemId());
+        if (Objects.nonNull(userItemSummaryDO)) {
+            if(!userItemSummaryDO.getCollectType().equals(ItemTypeEnum.SUB_ITEM.getCode())) {
+                return;
+            }
+            String subItemIdList = userItemSummaryDO.getSubItemIdList();
+            Set<Long> subItemIdListSet = new HashSet<>(JSONUtil.parseArray(subItemIdList).toList(Long.class));
+            subItemIdListSet.add(userItemCollectDO.getSubItemId());
+            userItemSummaryDO.setSubItemIdList(JSONUtil.toJsonStr(subItemIdListSet));
+
+            List<SubItemDO> subItemDOS = subItemService.listByItemId(userItemCollectDO.getItemId());
+            Set<Long> dbSubItemIdSet = subItemDOS.stream().map(SubItemDO::getId).collect(Collectors.toSet());
+            if(subItemIdListSet.equals(dbSubItemIdSet)) {
+                userItemSummaryDO.setCollectStatus(true);
+            }
+            userItemSummaryService.updateById(userItemSummaryDO);
+        } else {
+            userItemSummaryDO = new UserItemSummaryDO();
+            userItemSummaryDO.setUserId(userItemCollectDO.getUserId());
+            userItemSummaryDO.setItemId(userItemCollectDO.getItemId());
+            userItemSummaryDO.setCollectType(ItemTypeEnum.SUB_ITEM.getCode());
+            Set<Long> subItemIdSet = new HashSet<>();
+            subItemIdSet.add(userItemCollectDO.getSubItemId());
+            userItemSummaryDO.setSubItemIdList(JSONUtil.toJsonStr(subItemIdSet));
+            userItemSummaryService.save(userItemSummaryDO);
+        }
+    }
+
+    private void itemCollectSummary(UserItemCollectDO userItemCollectDO) {
+        UserItemSummaryDO userItemSummaryDO = userItemSummaryService.getByUserIdAndItemId(userItemCollectDO.getUserId(), userItemCollectDO.getItemId());
+        if (Objects.nonNull(userItemSummaryDO)) {
+            userItemSummaryDO.setCollectStatus(true);
+            userItemSummaryDO.setCollectType(ItemTypeEnum.ITEM.getCode());
+            userItemSummaryService.updateById(userItemSummaryDO);
+        } else {
+            userItemSummaryDO = new UserItemSummaryDO();
+            userItemSummaryDO.setUserId(userItemCollectDO.getUserId());
+            userItemSummaryDO.setItemId(userItemCollectDO.getItemId());
+            userItemSummaryDO.setCollectType(ItemTypeEnum.ITEM.getCode());
+            userItemSummaryDO.setCollectStatus(true);
+            userItemSummaryService.save(userItemSummaryDO);
+        }
     }
 
     @Override
@@ -233,6 +365,12 @@ public class ItemBizServiceImpl implements ItemBizService {
             vo.setUsername(userDO.getUsername());
             vo.setHeadImgUrl(userDO.getHeadImgUrl());
         });
+    }
+
+    public static void main(String[] args) {
+        String subItemIdList = "[1,2,3,4,5,6,7,8,9,10,1]";
+        Set<Long> subItemIdListSet = new HashSet<>(JSONUtil.parseArray(subItemIdList).toList(Long.class));
+        System.out.println(subItemIdListSet);
     }
 }
 

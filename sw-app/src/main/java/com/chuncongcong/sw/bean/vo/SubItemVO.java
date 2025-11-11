@@ -4,17 +4,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
-@Schema(description = "物品信息")
-public class ItemVO {
+@Schema(description = "子物品信息")
+public class SubItemVO {
 
     @Schema(description = "物品ID")
     private Long id;
 
     @Schema(description = "区域ID")
     private Long regionId;
+
+    @Schema(description = "物品父ID")
+    private Long itemId;
 
     @Schema(description = "物品名称")
     private String name;
@@ -30,11 +32,5 @@ public class ItemVO {
 
     @Schema(description = "是否收集")
     private Boolean collect = Boolean.FALSE;
-
-    @Schema(description = "收集最低价")
-    private BigDecimal minCollectPrice;
-
-    @Schema(description = "子物品信息")
-    private List<SubItemVO> subItemList;
 
 }

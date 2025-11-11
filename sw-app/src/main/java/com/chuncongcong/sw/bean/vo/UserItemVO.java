@@ -19,6 +19,12 @@ public class UserItemVO {
     @Schema(description = "物品ID")
     private Long itemId;
 
+    @Schema(description = "子物品ID")
+    private Long subItemId;
+
+    @Schema(description = "物品名称")
+    private String name;
+
     @Schema(description = "收集时间")
     private LocalDate collectDate;
 

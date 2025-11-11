@@ -6,8 +6,13 @@ import com.chuncongcong.sw.mapper.SubItemMapper;
 import com.chuncongcong.sw.service.SubItemService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SubItemServiceImpl extends ServiceImpl<SubItemMapper, SubItemDO> implements SubItemService {
 
-
+    @Override
+    public List<SubItemDO> listByItemId(Long itemId) {
+        return this.lambdaQuery().eq(SubItemDO::getItemId, itemId).list();
+    }
 }

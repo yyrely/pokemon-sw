@@ -6,6 +6,7 @@ import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.ReginItemCountVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
+import com.chuncongcong.sw.bean.vo.UserItemVO;
 import com.chuncongcong.sw.entity.ItemDO;
 import com.chuncongcong.sw.entity.UserItemCollectDO;
 
@@ -18,11 +19,13 @@ public interface ItemBizService {
 
     ItemDO info(ItemParam param);
 
+    ItemVO infoHasCollect(ItemParam param);
+
     List<ItemVO> listUserFirst(ItemParam param);
 
     List<ItemVO> listItemsWithCollectStatus(Boolean collectStatus);
 
-    List<UserItemCollectDO> userList(ItemParam param);
+    List<UserItemVO> userList(ItemParam param);
 
     Map<Long, ReginItemCountVO> userCountByRegions(List<Long> regionIdList);
 
@@ -35,5 +38,7 @@ public interface ItemBizService {
     List<TopVO> maxTop();
 
     List<TopVO> minTop();
+
+
 
 }

@@ -35,11 +35,11 @@ public class ItemController {
         return ApiListResponse.success(BeanUtil.copyToList(itemDOList, ItemVO.class));
     }
 
-    @Operation(summary = "物品详情")
-    @PostMapping("/info")
-    public ApiResponse<ItemVO> info(@RequestBody ItemParam param) {
-        ItemDO itemDO = itemBizService.info(param);
-        return ApiResponse.success(BeanUtil.copyProperties(itemDO, ItemVO.class));
+    @Operation(summary = "物品详情(包含收藏信息)")
+    @PostMapping("/info/has/collect")
+    public ApiResponse<ItemVO> infoHasCollect(@RequestBody ItemParam param) {
+        ItemVO itemVO = itemBizService.infoHasCollect(param);
+        return ApiResponse.success(itemVO);
     }
 
     @Operation(summary = "查询物品列表（已收集优先）")

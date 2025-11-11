@@ -33,12 +33,12 @@ public class WebAutoConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/swagger-ui.html", "/swagger-ui/*", "/v3/api-docs", "/error", "/pic/**");
     }
 
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler(filePatternPrefix + "**")
-//                .addResourceLocations("file:" + filePath)
-//                .setCachePeriod(3600);
-//    }
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(filePatternPrefix + "**")
+                .addResourceLocations("file:" + filePath)
+                .setCachePeriod(3600);
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
