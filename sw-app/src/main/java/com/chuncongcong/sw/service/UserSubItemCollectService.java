@@ -9,4 +9,6 @@ public interface UserSubItemCollectService extends IService<UserSubItemCollectDO
 
 
     List<UserSubItemCollectDO> listByUserIdAndItemId(Long userId, Long itemId);
+
+    List<UserSubItemCollectDO> listByUserId(Long userId);
 }

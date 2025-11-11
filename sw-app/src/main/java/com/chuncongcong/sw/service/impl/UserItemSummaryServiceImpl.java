@@ -23,5 +23,8 @@ public class UserItemSummaryServiceImpl extends ServiceImpl<UserItemSummaryMappe
                 .eq(UserItemSummaryDO::getItemId, itemId).one();
     }
 
-
+    @Override
+    public List<UserItemSummaryDO> listByUserId(Long userId) {
+        return this.lambdaQuery().eq(UserItemSummaryDO::getUserId, userId).list();
+    }
 }

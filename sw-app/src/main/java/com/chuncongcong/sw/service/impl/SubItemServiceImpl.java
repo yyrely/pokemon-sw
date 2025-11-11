@@ -15,4 +15,13 @@ public class SubItemServiceImpl extends ServiceImpl<SubItemMapper, SubItemDO> im
     public List<SubItemDO> listByItemId(Long itemId) {
         return this.lambdaQuery().eq(SubItemDO::getItemId, itemId).list();
     }
+
+    @Override
+    public List<SubItemDO> listAll() {
+        return this.lambdaQuery()
+                .orderByAsc(SubItemDO::getRegionId)
+                .orderByAsc(SubItemDO::getItemId)
+                .orderByAsc(SubItemDO::getSort)
+                .list();
+    }
 }
