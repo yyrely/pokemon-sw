@@ -239,8 +239,13 @@ public class ItemBizServiceImpl implements ItemBizService {
         // 用户收藏
         List<Long> allItemIds = allItemList.stream().map(ItemDO::getId).toList();
         Long userId = ContextHolder.getUserId();
+        List<UserItemSummaryDO> userItemSummaryDOS = userItemSummaryService.listByUserIdAndItemIds(userId, allItemIds);
+        Map<Long, UserItemSummaryDO> userItemSummaryMap = userItemSummaryDOS.stream()
+                .collect(Collectors.toMap(UserItemSummaryDO::getItemId, Function.identity()));
         List<UserItemCollectDO> userItemList = userItemCollectService.listByUserIdAndItemIdList(userId, allItemIds);
         Map<Long, List<UserItemCollectDO>> userItemMap = userItemList.stream().collect(Collectors.groupingBy(UserItemCollectDO::getItemId));
+        List<UserSubItemCollectDO> userSubItemList = userSubItemCollectService.listByUserIdAndItemIdList(userId, allItemIds);
+        Map<Long, List<UserSubItemCollectDO>> userSubItemMap = userSubItemList.stream().collect(Collectors.groupingBy(UserSubItemCollectDO::getItemId));
 
         // 针对每个 region 计算
         Map<Long, ReginItemCountVO> result = new HashMap<>();
@@ -253,19 +258,31 @@ public class ItemBizServiceImpl implements ItemBizService {
 
             if (!regionItems.isEmpty()) {
                 List<Long> regionItemIds = regionItems.stream().map(ItemDO::getId).toList();
+                List<UserItemSummaryDO> regionUserItemSummary = regionItemIds.stream()
+                        .map(userItemSummaryMap::get)
+                        .filter(Objects::nonNull).toList();
                 List<UserItemCollectDO> regionUserItems = regionItemIds.stream()
                         .flatMap(id -> userItemMap.getOrDefault(id, Collections.emptyList()).stream())
                         .toList();
-
-                vo.setCollectCount((int) regionUserItems.stream().map(UserItemCollectDO::getItemId).distinct().count());
+                List<UserSubItemCollectDO> regionUserSubItems = regionItemIds.stream()
+                        .flatMap(id -> userSubItemMap.getOrDefault(id, Collections.emptyList()).stream())
+                        .toList();
+                
+                vo.setCollectCount(regionUserItemSummary.size());
                 vo.setUnCollectCount(vo.getCount() - vo.getCollectCount());
                 vo.setCollectRate(BigDecimal.valueOf(vo.getCollectCount()).divide(BigDecimal.valueOf(vo.getCount()), 4, RoundingMode.HALF_UP));
-                vo.setCollectNumber(regionUserItems.size());
-                vo.setCollectPriceTotal(regionUserItems.stream()
+                vo.setCollectNumber(regionUserItems.size() + regionUserSubItems.size());
+                BigDecimal itemCollectPrice = regionUserItems.stream()
                         .map(UserItemCollectDO::getCollectPrice)
                         .filter(Objects::nonNull)
                         .reduce(BigDecimal::add)
-                        .orElse(BigDecimal.ZERO));
+                        .orElse(BigDecimal.ZERO);
+                BigDecimal subItemCollectPrice = regionUserSubItems.stream()
+                        .map(UserSubItemCollectDO::getCollectPrice)
+                        .filter(Objects::nonNull)
+                        .reduce(BigDecimal::add)
+                        .orElse(BigDecimal.ZERO);
+                vo.setCollectPriceTotal(itemCollectPrice.add(subItemCollectPrice));
             }
             result.put(regionId, vo);
         }
@@ -363,18 +380,18 @@ public class ItemBizServiceImpl implements ItemBizService {
         } else {
             throw ServiceException.instance(PARAM_ERROR);
         }
-        UserItemSummaryDO userItemSummaryDO = userItemSummaryService.getByUserIdAndItemId(param.getUserId(), itemId);
+        UserItemSummaryDO userItemSummaryDO = userItemSummaryService.getByUserIdAndItemId(ContextHolder.getUserId(), itemId);
 
         List<SubItemDO> subItemDOS = subItemService.listByItemId(itemId);
         Set<Long> dbSubItemIdSet = subItemDOS.stream().map(SubItemDO::getId).collect(Collectors.toSet());
-        List<UserSubItemCollectDO> userSubItemCollectDOS = userSubItemCollectService.listByUserIdAndItemId(param.getUserId(), itemId);
+        List<UserSubItemCollectDO> userSubItemCollectDOS = userSubItemCollectService.listByUserIdAndItemId(ContextHolder.getUserId(), itemId);
         Set<Long> dbCollectSubItemIdSet = userSubItemCollectDOS.stream().map(UserSubItemCollectDO::getSubItemId).collect(Collectors.toSet());
 
         userItemSummaryDO.setCollectType(ItemTypeEnum.SUB_ITEM.getCode());
         userItemSummaryDO.setSubItemIdList(JSONUtil.toJsonStr(dbCollectSubItemIdSet));
         userItemSummaryDO.setCollectStatus(dbCollectSubItemIdSet.equals(dbSubItemIdSet));
 
-        List<UserItemCollectDO> userItemCollectDOS = userItemCollectService.listByUserIdAndItemIdList(param.getUserId(), Collections.singletonList(itemId));
+        List<UserItemCollectDO> userItemCollectDOS = userItemCollectService.listByUserIdAndItemIdList(ContextHolder.getUserId(), Collections.singletonList(itemId));
         if (CollUtil.isNotEmpty(userItemCollectDOS)) {
             userItemSummaryDO.setCollectType(ItemTypeEnum.ITEM.getCode());
             userItemSummaryDO.setCollectStatus(true);

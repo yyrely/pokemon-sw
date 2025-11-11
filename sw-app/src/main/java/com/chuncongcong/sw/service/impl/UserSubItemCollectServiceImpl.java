@@ -1,6 +1,7 @@
 package com.chuncongcong.sw.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chuncongcong.sw.entity.UserItemCollectDO;
 import com.chuncongcong.sw.entity.UserSubItemCollectDO;
 import com.chuncongcong.sw.mapper.UserSubItemCollectMapper;
 import com.chuncongcong.sw.service.UserSubItemCollectService;
@@ -21,5 +22,11 @@ public class UserSubItemCollectServiceImpl extends ServiceImpl<UserSubItemCollec
     public List<UserSubItemCollectDO> listByUserId(Long userId) {
         return this.lambdaQuery().eq(UserSubItemCollectDO::getUserId, userId).list();
 
+    }
+
+    @Override
+    public List<UserSubItemCollectDO> listByUserIdAndItemIdList(Long userId, List<Long> itemIds) {
+        return this.lambdaQuery().eq(UserSubItemCollectDO::getUserId, userId).in(UserSubItemCollectDO::getItemId, itemIds)
+                .orderByDesc(UserSubItemCollectDO::getCollectDate, UserSubItemCollectDO::getCreateTime).list();
     }
 }
