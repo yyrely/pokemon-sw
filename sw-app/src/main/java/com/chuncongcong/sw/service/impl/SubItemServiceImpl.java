@@ -13,7 +13,7 @@ public class SubItemServiceImpl extends ServiceImpl<SubItemMapper, SubItemDO> im
 
     @Override
     public List<SubItemDO> listByItemId(Long itemId) {
-        return this.lambdaQuery().eq(SubItemDO::getItemId, itemId).list();
+        return this.lambdaQuery().eq(SubItemDO::getItemId, itemId).orderByAsc(SubItemDO::getSort).list();
     }
 
     @Override

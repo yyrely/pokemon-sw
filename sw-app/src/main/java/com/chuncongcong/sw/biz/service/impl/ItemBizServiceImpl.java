@@ -260,14 +260,14 @@ public class ItemBizServiceImpl implements ItemBizService {
                 List<Long> regionItemIds = regionItems.stream().map(ItemDO::getId).toList();
                 List<UserItemSummaryDO> regionUserItemSummary = regionItemIds.stream()
                         .map(userItemSummaryMap::get)
-                        .filter(Objects::nonNull).toList();
+                        .filter(s -> Objects.nonNull(s) && s.getCollectStatus()).toList();
                 List<UserItemCollectDO> regionUserItems = regionItemIds.stream()
                         .flatMap(id -> userItemMap.getOrDefault(id, Collections.emptyList()).stream())
                         .toList();
                 List<UserSubItemCollectDO> regionUserSubItems = regionItemIds.stream()
                         .flatMap(id -> userSubItemMap.getOrDefault(id, Collections.emptyList()).stream())
                         .toList();
-                
+
                 vo.setCollectCount(regionUserItemSummary.size());
                 vo.setUnCollectCount(vo.getCount() - vo.getCollectCount());
                 vo.setCollectRate(BigDecimal.valueOf(vo.getCollectCount()).divide(BigDecimal.valueOf(vo.getCount()), 4, RoundingMode.HALF_UP));
