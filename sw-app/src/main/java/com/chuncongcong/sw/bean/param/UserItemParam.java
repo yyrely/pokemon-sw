@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Schema(description = "用户物品信息")
@@ -24,6 +25,9 @@ public class UserItemParam {
 
     @Schema(description = "子物品ID")
     private Long subItemId;
+
+    @Schema(description = "子物品ID集合")
+    private List<Long> subItemIdList;
 
     @Schema(description = "收集时间")
     private LocalDate collectDate;

@@ -20,7 +20,7 @@ public class UserItemVO {
     private Long itemId;
 
     @Schema(description = "子物品ID")
-    private Long subItemId;
+    private String subItemId;
 
     @Schema(description = "物品名称")
     private String name;

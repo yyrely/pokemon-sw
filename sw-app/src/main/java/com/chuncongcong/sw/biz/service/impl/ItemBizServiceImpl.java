@@ -126,7 +126,7 @@ public class ItemBizServiceImpl implements ItemBizService {
         List<UserItemCollectDO> userItemCollectDOList = userItemCollectService.listByUserId(ContextHolder.getUserId());
         List<UserSubItemCollectDO> userSubItemCollectDOS = userSubItemCollectService.listByUserId(ContextHolder.getUserId());
         Map<Long, UserItemCollectDO> userItemCollectDOMap = new HashMap<>();
-        Map<Long, UserSubItemCollectDO> userSubItemCollectDOMap = new HashMap<>();
+        Map<String, UserSubItemCollectDO> userSubItemCollectDOMap = new HashMap<>();
         if (CollUtil.isNotEmpty(userItemCollectDOList)) {
             userItemCollectDOMap = getUserItemMinPriceMap(userItemCollectDOList);
         }
@@ -161,22 +161,46 @@ public class ItemBizServiceImpl implements ItemBizService {
         return itemVOS;
     }
 
-    private void addSubItemCollect(Map<Long, List<SubItemDO>> subItemGroupMap, Map<Long, UserSubItemCollectDO> userSubItemCollectDOMap, Long itemId, List<ItemVO> itemVOS) {
+    private void addSubItemCollect(Map<Long, List<SubItemDO>> subItemGroupMap, Map<String, UserSubItemCollectDO> userSubItemCollectDOMap, Long itemId, List<ItemVO> itemVOS) {
         List<SubItemDO> itemSubItemDOS = subItemGroupMap.get(itemId);
         if (CollUtil.isEmpty(itemSubItemDOS)) {
             return;
         }
+        Map<Long, SubItemDO> subItemDOMap = itemSubItemDOS.stream().collect(Collectors.toMap(SubItemDO::getId, Function.identity()));
         for (SubItemDO subItemDO : itemSubItemDOS) {
-            UserSubItemCollectDO userSubItemCollectDO = userSubItemCollectDOMap.get(subItemDO.getId());
-            if (Objects.isNull(userSubItemCollectDO)) {
+            List<UserSubItemCollectDO> userSubItemCollectDOS = findCollect(userSubItemCollectDOMap, subItemDO.getId());
+            if (CollUtil.isEmpty(userSubItemCollectDOS)) {
                 continue;
             }
-            ItemVO vo = BeanUtil.toBean(subItemDO, ItemVO.class);
-            vo.setId(subItemDO.getItemId());
-            vo.setCollect(true);
-            vo.setMinCollectPrice(userSubItemCollectDO.getCollectPrice());
-            itemVOS.add(vo);
+            for (UserSubItemCollectDO userSubItemCollectDO : userSubItemCollectDOS) {
+                List<Long> subItemIds = JSONUtil.parseArray(userSubItemCollectDO.getSubItemId()).toList(Long.class);
+                ItemVO vo;
+                if (subItemIds.size() == 1) {
+                    vo = BeanUtil.toBean(subItemDO, ItemVO.class);
+                    vo.setId(subItemDO.getItemId());
+                } else {
+                    vo = new ItemVO();
+                    vo.setId(subItemDO.getItemId());
+                    vo.setRegionId(subItemDO.getRegionId());
+                    vo.setName("子盒合集");
+                    vo.setImgList(subItemIds.stream().map(subItemId -> subItemDOMap.get(subItemId).getImg()).toList());
+                }
+                vo.setCollect(true);
+                vo.setMinCollectPrice(userSubItemCollectDO.getCollectPrice());
+                itemVOS.add(vo);
+            }
         }
+    }
+
+    private List<UserSubItemCollectDO> findCollect(Map<String, UserSubItemCollectDO> jsonKeyCollectMap, Long subItemId) {
+        List<UserSubItemCollectDO> result = new ArrayList<>();
+        for (Map.Entry<String, UserSubItemCollectDO> entry : jsonKeyCollectMap.entrySet()) {
+            List<Long> ids = JSONUtil.parseArray(entry.getKey()).toList(Long.class);
+            if (ids.contains(subItemId)) {
+                result.add(entry.getValue());
+            }
+        }
+        return result;
     }
 
     private Map<Long, UserItemCollectDO> getUserItemMinPriceMap(List<UserItemCollectDO> userItemCollectDOList) {
@@ -191,7 +215,7 @@ public class ItemBizServiceImpl implements ItemBizService {
                 ));
     }
 
-    private Map<Long, UserSubItemCollectDO> getUserSubItemMinPriceMap(List<UserSubItemCollectDO> userSubItemCollectDOList) {
+    private Map<String, UserSubItemCollectDO> getUserSubItemMinPriceMap(List<UserSubItemCollectDO> userSubItemCollectDOList) {
         return userSubItemCollectDOList.stream()
                 .collect(Collectors.toMap(
                         UserSubItemCollectDO::getSubItemId,
@@ -220,7 +244,14 @@ public class ItemBizServiceImpl implements ItemBizService {
                 .stream().peek(vo -> vo.setName("整盒")).toList());
         List<UserSubItemCollectDO> userSubItemCollectDOS = userSubItemCollectService.listByUserIdAndItemId(ContextHolder.getUserId(), param.getId());
         List<UserItemVO> userSubItemVOS = Optional.ofNullable(BeanUtil.copyToList(userSubItemCollectDOS, UserItemVO.class)).orElse(List.of())
-                .stream().peek(vo -> vo.setName(subItemVOMap.get(vo.getSubItemId()))).toList();
+                .stream().peek(vo -> {
+                    String subItemId = vo.getSubItemId();
+                    List<Long> subItemIds = JSONUtil.parseArray(subItemId).toList(Long.class);
+                    String name = subItemIds.stream()
+                            .map(subItemVOMap::get)
+                            .collect(Collectors.joining("\n"));
+                    vo.setName(name);
+                }).toList();
         userItemVOS.addAll(userSubItemVOS);
         userItemVOS.sort(Comparator.comparing(UserItemVO::getCollectDate).reversed());
         return userItemVOS;
@@ -271,7 +302,11 @@ public class ItemBizServiceImpl implements ItemBizService {
                 vo.setCollectCount(regionUserItemSummary.size());
                 vo.setUnCollectCount(vo.getCount() - vo.getCollectCount());
                 vo.setCollectRate(BigDecimal.valueOf(vo.getCollectCount()).divide(BigDecimal.valueOf(vo.getCount()), 4, RoundingMode.HALF_UP));
-                vo.setCollectNumber(regionUserItems.size() + regionUserSubItems.size());
+                int subItemSize = regionUserSubItems.stream().mapToInt(sub -> {
+                    List<Long> subItemIds = JSONUtil.parseArray(sub.getSubItemId()).toList(Long.class);
+                    return subItemIds.size();
+                }).sum();
+                vo.setCollectNumber(regionUserItems.size() + subItemSize);
                 BigDecimal itemCollectPrice = regionUserItems.stream()
                         .map(UserItemCollectDO::getCollectPrice)
                         .filter(Objects::nonNull)
@@ -302,11 +337,17 @@ public class ItemBizServiceImpl implements ItemBizService {
                 itemCollectSummary(userItemCollectDO);
             }
         } else if (ItemTypeEnum.SUB_ITEM.getCode().equals(param.getItemType())) {
-            UserSubItemCollectDO userItemCollectDO = BeanUtil.copyProperties(param, UserSubItemCollectDO.class);
-            userItemCollectDO.setUserId(ContextHolder.getUserId());
-            userSubItemCollectService.saveOrUpdate(userItemCollectDO);
+            UserSubItemCollectDO userSubItemCollectDO = BeanUtil.copyProperties(param, UserSubItemCollectDO.class);
+            userSubItemCollectDO.setUserId(ContextHolder.getUserId());
+            if (Objects.nonNull(param.getSubItemId())) {
+                userSubItemCollectDO.setSubItemId(JSONUtil.toJsonStr(List.of(param.getSubItemId())));
+            }
+            if (CollUtil.isNotEmpty(param.getSubItemIdList())) {
+                userSubItemCollectDO.setSubItemId(JSONUtil.toJsonStr(param.getSubItemIdList()));
+            }
+            userSubItemCollectService.saveOrUpdate(userSubItemCollectDO);
             if (Objects.isNull(id)) {
-                subItemCollectSummary(userItemCollectDO);
+                subItemCollectSummary(userSubItemCollectDO);
             }
         }
     }
@@ -318,7 +359,7 @@ public class ItemBizServiceImpl implements ItemBizService {
         if (Objects.nonNull(userItemSummaryDO)) {
             String subItemIdList = userItemSummaryDO.getSubItemIdList();
             Set<Long> subItemIdSet = new HashSet<>(JSONUtil.parseArray(subItemIdList).toList(Long.class));
-            subItemIdSet.add(userItemCollectDO.getSubItemId());
+            subItemIdSet.addAll(JSONUtil.parseArray(userItemCollectDO.getSubItemId()).toList(Long.class));
             userItemSummaryDO.setSubItemIdList(JSONUtil.toJsonStr(subItemIdSet));
 
             if (subItemIdSet.equals(dbSubItemIdSet)) {
@@ -330,8 +371,7 @@ public class ItemBizServiceImpl implements ItemBizService {
             userItemSummaryDO.setUserId(userItemCollectDO.getUserId());
             userItemSummaryDO.setItemId(userItemCollectDO.getItemId());
             userItemSummaryDO.setCollectType(ItemTypeEnum.SUB_ITEM.getCode());
-            Set<Long> subItemIdSet = new HashSet<>();
-            subItemIdSet.add(userItemCollectDO.getSubItemId());
+            Set<Long> subItemIdSet = new HashSet<>(JSONUtil.parseArray(userItemCollectDO.getSubItemId()).toList(Long.class));
             userItemSummaryDO.setSubItemIdList(JSONUtil.toJsonStr(subItemIdSet));
 
             if (subItemIdSet.equals(dbSubItemIdSet)) {
@@ -385,7 +425,9 @@ public class ItemBizServiceImpl implements ItemBizService {
         List<SubItemDO> subItemDOS = subItemService.listByItemId(itemId);
         Set<Long> dbSubItemIdSet = subItemDOS.stream().map(SubItemDO::getId).collect(Collectors.toSet());
         List<UserSubItemCollectDO> userSubItemCollectDOS = userSubItemCollectService.listByUserIdAndItemId(ContextHolder.getUserId(), itemId);
-        Set<Long> dbCollectSubItemIdSet = userSubItemCollectDOS.stream().map(UserSubItemCollectDO::getSubItemId).collect(Collectors.toSet());
+        Set<Long> dbCollectSubItemIdSet = userSubItemCollectDOS.stream()
+                .flatMap(doItem -> JSONUtil.parseArray(doItem.getSubItemId()).toList(Long.class).stream())
+                .collect(Collectors.toSet());
 
         userItemSummaryDO.setCollectType(ItemTypeEnum.SUB_ITEM.getCode());
         userItemSummaryDO.setSubItemIdList(JSONUtil.toJsonStr(dbCollectSubItemIdSet));
@@ -437,8 +479,9 @@ public class ItemBizServiceImpl implements ItemBizService {
     }
 
     public static void main(String[] args) {
-        String subItemIdList = "[1,2,3,4,5,6,7,8,9,10,1]";
-        Set<Long> subItemIdListSet = new HashSet<>(JSONUtil.parseArray(subItemIdList).toList(Long.class));
+        List<Long> list = List.of(1L, 2L, 3L);
+        Set<Long> subItemIdListSet = new HashSet<>();
+        subItemIdListSet.addAll(list);
         System.out.println(subItemIdListSet);
     }
 }

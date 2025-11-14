@@ -28,7 +28,7 @@ public class UserSubItemCollectDO extends BaseDO {
     /**
      * 子物品ID
      */
-    private Long subItemId;
+    private String subItemId;
 
     /**
      * 收集时间

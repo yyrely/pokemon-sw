@@ -25,6 +25,9 @@ public class ItemVO {
     @Schema(description = "物品图片URL")
     private String img;
 
+    @Schema(description = "物品图片URL")
+    private List<String> imgList;
+
     @Schema(description = "排序", example = "1")
     private Integer sort;
 
