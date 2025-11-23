@@ -9,17 +9,44 @@ import com.chuncongcong.framework.util.ContextHolder;
 import com.chuncongcong.sw.bean.enums.ItemTypeEnum;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
-import com.chuncongcong.sw.bean.vo.*;
+import com.chuncongcong.sw.bean.vo.ItemInfoVO;
+import com.chuncongcong.sw.bean.vo.ItemVO;
+import com.chuncongcong.sw.bean.vo.ReginItemCountVO;
+import com.chuncongcong.sw.bean.vo.SubItemVO;
+import com.chuncongcong.sw.bean.vo.TopVO;
+import com.chuncongcong.sw.bean.vo.UserItemVO;
 import com.chuncongcong.sw.biz.service.ItemBizService;
-import com.chuncongcong.sw.entity.*;
-import com.chuncongcong.sw.service.*;
+import com.chuncongcong.sw.entity.ItemDO;
+import com.chuncongcong.sw.entity.ItemInfoDO;
+import com.chuncongcong.sw.entity.SubItemDO;
+import com.chuncongcong.sw.entity.UserDO;
+import com.chuncongcong.sw.entity.UserItemCollectDO;
+import com.chuncongcong.sw.entity.UserItemSummaryDO;
+import com.chuncongcong.sw.entity.UserSubItemCollectDO;
+import com.chuncongcong.sw.service.ItemInfoService;
+import com.chuncongcong.sw.service.ItemService;
+import com.chuncongcong.sw.service.SubItemService;
+import com.chuncongcong.sw.service.UserItemCollectService;
+import com.chuncongcong.sw.service.UserItemSummaryService;
+import com.chuncongcong.sw.service.UserService;
+import com.chuncongcong.sw.service.UserSubItemCollectService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -488,6 +515,26 @@ public class ItemBizServiceImpl implements ItemBizService {
         }
         List<ItemInfoDO> itemInfoDOList = itemInfoService.listByItemId(param.getId());
         return BeanUtil.copyToList(itemInfoDOList, ItemInfoVO.class);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void collectAll() {
+        List<ItemDO> itemDOS = itemService.listByRegionId(null);
+        List<UserItemSummaryDO> userItemSummaryDOS = userItemSummaryService.listByUserId(ContextHolder.getUserId());
+        Map<Long, Boolean> collectStatusMap = userItemSummaryDOS.stream().collect(Collectors.toMap(UserItemSummaryDO::getItemId, UserItemSummaryDO::getCollectStatus));
+
+        LocalDate now = LocalDate.now();
+        List<ItemDO> list = itemDOS.stream().filter(itemDO -> !Objects.equals(Boolean.TRUE, collectStatusMap.get(itemDO.getId()))).toList();
+        for (ItemDO itemDO : list) {
+            UserItemParam param = new UserItemParam();
+            param.setUserId(ContextHolder.getUserId());
+            param.setItemId(itemDO.getId());
+            param.setItemType(ItemTypeEnum.ITEM.getCode());
+            param.setCollectPrice(BigDecimal.ZERO);
+            param.setCollectDate(now);
+            userSaveOrUpdate(param);
+        }
     }
 
     @Override

@@ -62,6 +62,13 @@ public class ItemUserController {
         return ApiResponse.success();
     }
 
+    @Operation(summary = "一键收集")
+    @PostMapping("/collect/all")
+    public ApiResponse<Void> collectAll() {
+        itemBizService.collectAll();
+        return ApiResponse.success();
+    }
+
     @Operation(summary = "用户物品追高排行")
     @PostMapping("/max/top")
     public ApiListResponse<TopVO> maxTop() {

@@ -35,9 +35,13 @@ public interface ItemBizService {
 
     List<ItemInfoVO> infoList(ItemParam param);
 
+    void collectAll();
+
     List<TopVO> maxTop();
 
     List<TopVO> minTop();
+
+
 
 
 
