@@ -63,7 +63,7 @@
         GROUP BY
             i.id
         ORDER BY
-            hold_number, id
+            hold_number, item_id
         LIMIT 0,20
     </select>
     <select id="maxReprint" resultType="com.chuncongcong.sw.bean.vo.ItemTopVO">
