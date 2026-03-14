@@ -5,6 +5,7 @@ import com.chuncongcong.framework.response.ApiListResponse;
 import com.chuncongcong.framework.response.ApiResponse;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
+import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.bean.vo.UserItemVO;
@@ -79,6 +80,18 @@ public class ItemUserController {
     @PostMapping("/min/top")
     public ApiListResponse<TopVO> minTop() {
         return ApiListResponse.success(itemBizService.minTop());
+    }
+
+    @Operation(summary = "用户物品持有率排行")
+    @PostMapping("/min/hold")
+    public ApiListResponse<ItemTopVO> minHold() {
+        return ApiListResponse.success(itemBizService.minHold());
+    }
+
+    @Operation(summary = "物品再版排行")
+    @PostMapping("/max/reprint")
+    public ApiListResponse<ItemTopVO> maxReprint() {
+        return ApiListResponse.success(itemBizService.maxReprint());
     }
 
 }

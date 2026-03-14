@@ -1,6 +1,7 @@
 package com.chuncongcong.sw.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.entity.UserItemCollectDO;
 
@@ -12,7 +13,12 @@ public interface UserItemCollectService extends IService<UserItemCollectDO> {
 
     List<UserItemCollectDO> listByUserId(Long userId);
 
-    List<TopVO> maxTop(int itemSize);
+    List<TopVO> maxTop(Integer itemSize);
 
-    List<TopVO> minTop(int itemSize);
+    List<TopVO> minTop(Integer itemSize);
+
+    List<ItemTopVO> minHold();
+
+    List<ItemTopVO> maxReprint();
+
 }

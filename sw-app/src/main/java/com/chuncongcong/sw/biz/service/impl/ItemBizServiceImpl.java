@@ -10,6 +10,7 @@ import com.chuncongcong.sw.bean.enums.ItemTypeEnum;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
+import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.ReginItemCountVO;
 import com.chuncongcong.sw.bean.vo.SubItemVO;
@@ -37,6 +38,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -540,7 +543,7 @@ public class ItemBizServiceImpl implements ItemBizService {
     @Override
     public List<TopVO> maxTop() {
         List<ItemDO> itemDOS = itemService.listByRegionId(null);
-        List<TopVO> topVOS = userItemCollectService.maxTop(itemDOS.size());
+        List<TopVO> topVOS = userItemCollectService.maxTop(null);
         List<Long> userIds = topVOS.stream().map(TopVO::getUserId).toList();
         topFill(userIds, topVOS);
         return topVOS;
@@ -549,9 +552,39 @@ public class ItemBizServiceImpl implements ItemBizService {
     @Override
     public List<TopVO> minTop() {
         List<ItemDO> itemDOS = itemService.listByRegionId(null);
-        List<TopVO> topVOS = userItemCollectService.minTop(itemDOS.size());
+        List<TopVO> topVOS = userItemCollectService.minTop(null);
         List<Long> userIds = topVOS.stream().map(TopVO::getUserId).toList();
         topFill(userIds, topVOS);
+        return topVOS;
+    }
+
+    @Override
+    public List<ItemTopVO> minHold() {
+        long userCount = userService.count();
+        List<ItemTopVO> topVOS = userItemCollectService.minHold();
+        for (ItemTopVO topVO : topVOS) {
+            if(Objects.isNull(topVO.getHoldNumber())) {
+                continue;
+            }
+            BigDecimal holdRate = new BigDecimal(topVO.getHoldNumber())
+                    .divide(new BigDecimal(userCount), 4, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"));
+            topVO.setHoldRate(holdRate + "%");
+        }
+        return topVOS;
+    }
+
+    @Override
+    public List<ItemTopVO> maxReprint() {
+        List<ItemTopVO> topVOS = userItemCollectService.maxReprint();
+        for (ItemTopVO topVO : topVOS) {
+            if (Objects.isNull(topVO.getReprintDate())) {
+                continue;
+            }
+            int reprintMonth = monthsBetween(topVO.getReprintDate(), LocalDate.now());
+            topVO.setReprintMonth(reprintMonth + "个月");
+            topVO.setReprintDateMonth(topVO.getReprintDate().format(DateTimeFormatter.ofPattern("yyyy年MM月")));
+        }
         return topVOS;
     }
 
@@ -565,11 +598,16 @@ public class ItemBizServiceImpl implements ItemBizService {
         });
     }
 
+    public static int monthsBetween(LocalDate start, LocalDate end) {
+        return (end.getYear() - start.getYear()) * 12
+                + (end.getMonthValue() - start.getMonthValue());
+    }
+
     public static void main(String[] args) {
-        List<Long> list = List.of(1L, 2L, 3L);
-        Set<Long> subItemIdListSet = new HashSet<>();
-        subItemIdListSet.addAll(list);
-        System.out.println(subItemIdListSet);
+        LocalDate date1 = LocalDate.of(2026, 1, 10);
+        LocalDate date2 = LocalDate.of(2026, 3, 9);
+
+        System.out.println(monthsBetween(date1, date2)); // 输出 14
     }
 }
 

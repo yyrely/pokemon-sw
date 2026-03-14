@@ -25,7 +25,7 @@
             HAVING COUNT( item_id ) = #{itemSize}
         </if>
         ORDER BY collect_price DESC
-        LIMIT 0,10
+        LIMIT 0,20
     </select>
     <select id="minTop" resultType="com.chuncongcong.sw.bean.vo.TopVO">
         SELECT
@@ -48,6 +48,36 @@
             HAVING COUNT( item_id ) = #{itemSize}
         </if>
         ORDER BY collect_price ASC
-        LIMIT 0,10
+        LIMIT 0,20
+    </select>
+    <select id="minHold" resultType="com.chuncongcong.sw.bean.vo.ItemTopVO">
+        SELECT
+            i.id as item_id,
+            ANY_VALUE(i.name) as item_name,
+            ANY_VALUE(i.img) as item_img,
+            COUNT( DISTINCT uis.user_id ) AS hold_number
+        FROM
+            sw_item i
+                LEFT JOIN sw_user_item_summary uis ON i.id = uis.item_id
+                AND uis.collect_status = 1
+        GROUP BY
+            i.id
+        ORDER BY
+            user_count, id
+        LIMIT 0,20
+    </select>
+    <select id="maxReprint" resultType="com.chuncongcong.sw.bean.vo.ItemTopVO">
+        SELECT
+            i.id as item_id,
+            ANY_VALUE(i.name) as item_name,
+            ANY_VALUE(i.img) as item_img,
+            MAX(ii.date) as reprint_date
+        FROM
+            sw_item i
+                LEFT JOIN sw_item_info ii ON i.id = ii.item_id
+        GROUP BY
+            i.id
+        order by reprint_date
+        LIMIT 0,20
     </select>
 </mapper>

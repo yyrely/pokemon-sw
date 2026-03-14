@@ -3,6 +3,7 @@ package com.chuncongcong.sw.biz.service;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
+import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.bean.vo.ReginItemCountVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
@@ -41,8 +42,8 @@ public interface ItemBizService {
 
     List<TopVO> minTop();
 
+    List<ItemTopVO> minHold();
 
-
-
+    List<ItemTopVO> maxReprint();
 
 }

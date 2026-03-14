@@ -1,6 +1,7 @@
 package com.chuncongcong.sw.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.entity.UserItemCollectDO;
 import com.chuncongcong.sw.mapper.UserItemCollectMapper;
@@ -25,12 +26,22 @@ public class UserItemCollectServiceImpl extends ServiceImpl<UserItemCollectMappe
     }
 
     @Override
-    public List<TopVO> maxTop(int itemSize) {
+    public List<TopVO> maxTop(Integer itemSize) {
         return this.baseMapper.maxTop(itemSize);
     }
 
     @Override
-    public List<TopVO> minTop(int itemSize) {
+    public List<TopVO> minTop(Integer itemSize) {
         return this.baseMapper.minTop(itemSize);
+    }
+
+    @Override
+    public List<ItemTopVO> minHold() {
+        return this.baseMapper.minHold();
+    }
+
+    @Override
+    public List<ItemTopVO> maxReprint() {
+        return this.baseMapper.maxReprint();
     }
 }
