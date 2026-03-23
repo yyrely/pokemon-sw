@@ -567,9 +567,8 @@ public class ItemBizServiceImpl implements ItemBizService {
                 continue;
             }
             BigDecimal holdRate = new BigDecimal(topVO.getHoldNumber())
-                    .divide(new BigDecimal(userCount), 4, RoundingMode.HALF_UP)
-                    .multiply(new BigDecimal("100"));
-            topVO.setHoldRate(holdRate + "%");
+                    .divide(new BigDecimal(userCount), 4, RoundingMode.HALF_UP);
+            topVO.setHoldRate(holdRate);
         }
         return topVOS;
     }

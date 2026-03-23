@@ -18,7 +18,7 @@ public class ItemTopVO {
 
     private Integer holdNumber;
 
-    private String holdRate;
+    private BigDecimal holdRate;
 
     private LocalDate reprintDate;
 
