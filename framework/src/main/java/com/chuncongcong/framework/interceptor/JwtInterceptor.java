@@ -29,6 +29,13 @@ public class JwtInterceptor implements HandlerInterceptor {
         // 类级注解
         IgnoreLogin classAnnotation = handlerMethod.getBeanType().getAnnotation(IgnoreLogin.class);
         if (methodAnnotation != null || classAnnotation != null) {
+            String token = request.getHeader(AUTHORIZATION);
+            if (token != null && token.startsWith(TOKEN_PREFIX)) {
+                Long userId = JwtUtil.parseToken(token.substring(7));
+                if (userId != null) {
+                    ContextHolder.setUserId(userId);
+                }
+            }
             // 放行
             return true;
         }

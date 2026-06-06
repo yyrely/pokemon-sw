@@ -102,7 +102,12 @@ public class ItemBizServiceImpl implements ItemBizService {
         }
         itemVO.setSubItemList(subItemList);
 
-        UserItemSummaryDO userItemSummaryDO = userItemSummaryService.getByUserIdAndItemId(ContextHolder.getUserId(), itemDO.getId());
+        Long userId = ContextHolder.getUserId();
+        if (Objects.isNull(userId)) {
+            return itemVO;
+        }
+
+        UserItemSummaryDO userItemSummaryDO = userItemSummaryService.getByUserIdAndItemId(userId, itemDO.getId());
         if (Objects.nonNull(userItemSummaryDO)) {
             Set<Long> subItemIdListSet = new HashSet<>();
             if (CharSequenceUtil.isNotEmpty(userItemSummaryDO.getSubItemIdList())) {
@@ -130,7 +135,12 @@ public class ItemBizServiceImpl implements ItemBizService {
         List<ItemVO> itemVOS = BeanUtil.copyToList(itemDOList, ItemVO.class);
         List<Long> itemIds = itemVOS.stream().map(ItemVO::getId).toList();
 
-        List<UserItemSummaryDO> userItemSummaryDOS = userItemSummaryService.listByUserIdAndItemIds(ContextHolder.getUserId(), itemIds);
+        Long userId = ContextHolder.getUserId();
+        if (Objects.isNull(userId)) {
+            return itemVOS;
+        }
+
+        List<UserItemSummaryDO> userItemSummaryDOS = userItemSummaryService.listByUserIdAndItemIds(userId, itemIds);
         if (userItemSummaryDOS.isEmpty()) {
             return itemVOS;
         }
@@ -337,6 +347,23 @@ public class ItemBizServiceImpl implements ItemBizService {
         // 用户收藏
         List<Long> allItemIds = allItemList.stream().map(ItemDO::getId).toList();
         Long userId = ContextHolder.getUserId();
+        if (Objects.isNull(userId)) {
+            Map<Long, ReginItemCountVO> result = new HashMap<>();
+            for (Long regionId : regionIdList) {
+                List<ItemDO> regionItems = itemByRegionMap.getOrDefault(regionId, Collections.emptyList());
+                ReginItemCountVO vo = new ReginItemCountVO();
+                vo.setRegionId(regionId);
+                vo.setCount(regionItems.size());
+                vo.setCollectCount(0);
+                vo.setUnCollectCount(regionItems.size());
+                vo.setCollectRate(BigDecimal.ZERO);
+                vo.setCollectNumber(0);
+                vo.setCollectPriceTotal(BigDecimal.ZERO);
+                result.put(regionId, vo);
+            }
+            return result;
+        }
+
         List<UserItemSummaryDO> userItemSummaryDOS = userItemSummaryService.listByUserIdAndItemIds(userId, allItemIds);
         Map<Long, UserItemSummaryDO> userItemSummaryMap = userItemSummaryDOS.stream()
                 .collect(Collectors.toMap(UserItemSummaryDO::getItemId, Function.identity()));

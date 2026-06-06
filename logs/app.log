@@ -1117,3 +1117,29 @@ Caused by: java.net.SocketException: Connection reset
 2026-06-06 13:48:46.201 [tomcat-shutdown] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
 2026-06-06 13:48:46.206 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown initiated...
 2026-06-06 13:48:46.208 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown completed.
+2026-06-06 23:08:25.548 [background-preinit] [] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-06-06 23:08:25.587 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Starting SwAppApplication using Java 17.0.12 with PID 3576 (D:\workspace\pw\pokemon-sw\sw-app\target\classes started by 73495 in D:\workspace\pw\pokemon-sw)
+2026-06-06 23:08:25.587 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - The following 1 profile is active: "dev"
+2026-06-06 23:08:26.310 [main] [] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=7512351d-3c8d-3fe1-a26b-74e62e86f951
+2026-06-06 23:08:26.598 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8088 (http)
+2026-06-06 23:08:26.610 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8088"]
+2026-06-06 23:08:26.612 [main] [] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-06 23:08:26.612 [main] [] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-06-06 23:08:26.667 [main] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-06-06 23:08:26.667 [main] [] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1046 ms
+2026-06-06 23:08:27.863 [main] [] INFO  c.b.m.e.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@420bc288
+2026-06-06 23:08:29.105 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-06 23:08:29.154 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8088"]
+2026-06-06 23:08:29.170 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8088 (http) with context path '/api'
+2026-06-06 23:08:30.326 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-06 23:08:30.334 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Started SwAppApplication in 6.371 seconds (process running for 7.052)
+2026-06-06 23:08:41.163 [http-nio-8088-exec-2] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-06 23:08:41.163 [http-nio-8088-exec-2] [] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-06-06 23:08:41.164 [http-nio-8088-exec-2] [] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-06-06 23:08:41.253 [http-nio-8088-exec-1] [43b5841d513c4c3288cb28520c4db6a2] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Starting...
+2026-06-06 23:08:41.658 [http-nio-8088-exec-1] [43b5841d513c4c3288cb28520c4db6a2] INFO  com.zaxxer.hikari.pool.HikariPool - HikariCP - Added connection com.mysql.cj.jdbc.ConnectionImpl@b45e09a
+2026-06-06 23:08:41.661 [http-nio-8088-exec-1] [43b5841d513c4c3288cb28520c4db6a2] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Start completed.
+2026-06-06 23:17:52.585 [SpringApplicationShutdownHook] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-06-06 23:17:52.671 [tomcat-shutdown] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-06-06 23:17:52.674 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown initiated...
+2026-06-06 23:17:52.677 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown completed.

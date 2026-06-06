@@ -1,6 +1,7 @@
 package com.chuncongcong.sw.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.chuncongcong.framework.interceptor.IgnoreLogin;
 import com.chuncongcong.framework.response.ApiListResponse;
 import com.chuncongcong.framework.response.ApiResponse;
 import com.chuncongcong.sw.bean.param.ItemParam;
@@ -29,6 +30,7 @@ public class ItemController {
     private ItemBizService itemBizService;
 
     @Operation(summary = "物品列表")
+    @IgnoreLogin
     @PostMapping("/list")
     public ApiListResponse<ItemVO> list(@RequestBody ItemParam param) {
         List<ItemDO> itemDOList = itemBizService.list(param);
@@ -36,6 +38,7 @@ public class ItemController {
     }
 
     @Operation(summary = "物品详情(包含收藏信息)")
+    @IgnoreLogin
     @PostMapping("/info/has/collect")
     public ApiResponse<ItemVO> infoHasCollect(@RequestBody ItemParam param) {
         ItemVO itemVO = itemBizService.infoHasCollect(param);
@@ -43,12 +46,14 @@ public class ItemController {
     }
 
     @Operation(summary = "查询物品列表（已收集优先）")
+    @IgnoreLogin
     @PostMapping("/list/user-first")
     public ApiListResponse<ItemVO> listUserFirst(@RequestBody ItemParam param) {
         return ApiListResponse.success(itemBizService.listUserFirst(param));
     }
 
     @Operation(summary = "物品资讯列表")
+    @IgnoreLogin
     @PostMapping("/info/list")
     public ApiListResponse<ItemInfoVO> infoList(@RequestBody ItemParam param) {
         return ApiListResponse.success(itemBizService.infoList(param));

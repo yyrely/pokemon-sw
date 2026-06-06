@@ -1,6 +1,7 @@
 package com.chuncongcong.sw.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.chuncongcong.framework.interceptor.IgnoreLogin;
 import com.chuncongcong.framework.response.ApiListResponse;
 import com.chuncongcong.framework.response.ApiResponse;
 import com.chuncongcong.sw.bean.param.RegionParam;
@@ -27,12 +28,14 @@ public class RegionController {
     private ReginBizService reginBizService;
 
     @Operation(summary = "根据ID查询地区")
+    @IgnoreLogin
     @PostMapping("/info")
     public ApiResponse<RegionVO> info(@RequestBody RegionParam param) {
         return ApiResponse.success(reginBizService.info(param));
     }
 
     @Operation(summary = "查询所有地区列表")
+    @IgnoreLogin
     @PostMapping("/list")
     public ApiListResponse<RegionVO> list() {
         return ApiListResponse.success(reginBizService.listAndCollect());
