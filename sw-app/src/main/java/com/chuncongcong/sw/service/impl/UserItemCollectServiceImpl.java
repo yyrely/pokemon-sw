@@ -1,6 +1,8 @@
 package com.chuncongcong.sw.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chuncongcong.sw.bean.vo.ExchangeItemVO;
+import com.chuncongcong.sw.bean.vo.ExchangeUserCardVO;
 import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.entity.UserItemCollectDO;
@@ -43,5 +45,25 @@ public class UserItemCollectServiceImpl extends ServiceImpl<UserItemCollectMappe
     @Override
     public List<ItemTopVO> maxReprint() {
         return this.baseMapper.maxReprint();
+    }
+
+    @Override
+    public List<ExchangeUserCardVO> listExchangeUsers(String keyword, Integer offset, Integer pageSize, Boolean random) {
+        return this.baseMapper.listExchangeUsers(keyword, offset, pageSize, random);
+    }
+
+    @Override
+    public List<ExchangeItemVO> listExchangeItemsByUserIds(List<Long> userIds, String keyword) {
+        return this.baseMapper.listExchangeItemsByUserIds(userIds, keyword);
+    }
+
+    @Override
+    public List<ExchangeItemVO> listExchangeItemsByUserId(Long userId, Integer offset, Integer pageSize) {
+        return this.baseMapper.listExchangeItemsByUserId(userId, offset, pageSize);
+    }
+
+    @Override
+    public List<ExchangeItemVO> listMyExchangeItems(Long userId) {
+        return this.baseMapper.listMyExchangeItems(userId);
     }
 }

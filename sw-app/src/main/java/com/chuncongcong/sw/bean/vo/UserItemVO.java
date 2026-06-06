@@ -7,31 +7,36 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-@Schema(description = "用户物品信息")
+@Schema(description = "user item")
 public class UserItemVO {
 
-    @Schema(description = "用户物品ID")
+    @Schema(description = "collect record id")
     private Long id;
 
-    @Schema(description = "用户ID")
+    @Schema(description = "user id")
     private Long userId;
 
-    @Schema(description = "物品ID")
+    @Schema(description = "item id")
     private Long itemId;
 
-    @Schema(description = "子物品ID")
+    @Schema(description = "sub item id")
     private String subItemId;
 
-    @Schema(description = "物品名称")
+    @Schema(description = "name")
     private String name;
 
-    @Schema(description = "收集时间")
+    @Schema(description = "collect date")
     private LocalDate collectDate;
 
-    @Schema(description = "收集价格")
+    @Schema(description = "collect price")
     private BigDecimal collectPrice;
 
-    @Schema(description = "备注")
+    @Schema(description = "remark")
     private String remark;
 
+    @Schema(description = "exchange")
+    private Boolean exchange;
+
+    @Schema(description = "exchange remark")
+    private String exchangeRemark;
 }

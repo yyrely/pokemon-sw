@@ -1,0 +1,18 @@
+2025-11-17 20:47:52.772 [background-preinit] [] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2025-11-17 20:47:52.811 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Starting SwAppApplication using Java 17.0.12 with PID 3236 (D:\workspace\pokemon-sw\sw-app\target\classes started by 73495 in D:\workspace\pokemon-sw)
+2025-11-17 20:47:52.811 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - The following 1 profile is active: "dev"
+2025-11-17 20:47:53.454 [main] [] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=7512351d-3c8d-3fe1-a26b-74e62e86f951
+2025-11-17 20:47:53.654 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8088 (http)
+2025-11-17 20:47:53.665 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8088"]
+2025-11-17 20:47:53.666 [main] [] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-11-17 20:47:53.666 [main] [] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-17 20:47:53.709 [main] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-11-17 20:47:53.709 [main] [] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 863 ms
+2025-11-17 20:47:54.531 [main] [] INFO  c.b.m.e.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@df5f5c0
+2025-11-17 20:47:55.693 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2025-11-17 20:47:55.735 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8088"]
+2025-11-17 20:47:55.749 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8088 (http) with context path '/api'
+2025-11-17 20:47:56.857 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2025-11-17 20:47:56.868 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Started SwAppApplication in 5.606 seconds (process running for 6.532)
+2025-11-17 20:47:59.657 [SpringApplicationShutdownHook] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-17 20:47:59.731 [tomcat-shutdown] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete

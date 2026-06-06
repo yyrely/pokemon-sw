@@ -8,34 +8,39 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Schema(description = "用户物品信息")
+@Schema(description = "user item")
 public class UserItemParam {
 
-    @Schema(description = "用户物品ID")
+    @Schema(description = "collect record id")
     private Long id;
 
-    @Schema(description = "用户ID")
+    @Schema(description = "user id")
     private Long userId;
 
-    @Schema(description = "项目类型，1-主物品，2-子物品")
+    @Schema(description = "item type: 1 main item, 2 sub item")
     private Integer itemType;
 
-    @Schema(description = "物品ID")
+    @Schema(description = "item id")
     private Long itemId;
 
-    @Schema(description = "子物品ID")
+    @Schema(description = "sub item id")
     private Long subItemId;
 
-    @Schema(description = "子物品ID集合")
+    @Schema(description = "sub item id list")
     private List<Long> subItemIdList;
 
-    @Schema(description = "收集时间")
+    @Schema(description = "collect date")
     private LocalDate collectDate;
 
-    @Schema(description = "收集价格")
+    @Schema(description = "collect price")
     private BigDecimal collectPrice;
 
-    @Schema(description = "备注")
+    @Schema(description = "remark")
     private String remark;
 
+    @Schema(description = "exchange")
+    private Boolean exchange;
+
+    @Schema(description = "exchange remark")
+    private String exchangeRemark;
 }

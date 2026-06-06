@@ -10,22 +10,25 @@ import lombok.Data;
 @Data
 public class UserParam {
 
-    @NotNull(message = "用户id不能为空")
-    @Schema(description = "用户id")
+    @NotNull(message = "user id cannot be empty")
+    @Schema(description = "user id")
     private Long id;
 
-    @NotBlank(message = "用户名不能为空")
-    @Size(min = 1, max = 10, message = "用户名长度必须在1到10个字符之间")
-    @Pattern(regexp = "^[a-zA-Z0-9_\\u4e00-\\u9fa5]+$", message = "用户名包含非法字符，只能包含中文、英文、数字或下划线")
-    @Schema(description = "用户名")
+    @NotBlank(message = "username cannot be empty")
+    @Size(min = 1, max = 10, message = "username length must be between 1 and 10")
+    @Pattern(regexp = "^[a-zA-Z0-9_\\u4e00-\\u9fa5]+$", message = "username contains invalid characters")
+    @Schema(description = "username")
     private String username;
 
-    @Schema(description = "性别")
+    @Schema(description = "gender")
     private Integer gender;
 
-    @Schema(description = "手机号")
+    @Schema(description = "mobile")
     private String mobile;
 
-    @Schema(description = "头像")
+    @Schema(description = "contact")
+    private String contact;
+
+    @Schema(description = "avatar")
     private String headImgUrl;
 }

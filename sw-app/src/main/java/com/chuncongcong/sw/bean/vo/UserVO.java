@@ -9,10 +9,12 @@ public class UserVO {
     @Schema(description = "id")
     private Long id;
 
-    @Schema(description = "用户名")
+    @Schema(description = "username")
     private String username;
 
-    @Schema(description = "头像")
+    @Schema(description = "avatar")
     private String headImgUrl;
 
+    @Schema(description = "contact")
+    private String contact;
 }

@@ -7,8 +7,11 @@ import cn.hutool.json.JSONUtil;
 import com.chuncongcong.framework.exception.ServiceException;
 import com.chuncongcong.framework.util.ContextHolder;
 import com.chuncongcong.sw.bean.enums.ItemTypeEnum;
+import com.chuncongcong.sw.bean.param.ExchangeSearchParam;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
+import com.chuncongcong.sw.bean.vo.ExchangeItemVO;
+import com.chuncongcong.sw.bean.vo.ExchangeUserCardVO;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
@@ -509,6 +512,121 @@ public class ItemBizServiceImpl implements ItemBizService {
             userItemSummaryDO.setCollectStatus(true);
         }
         userItemSummaryService.updateById(userItemSummaryDO);
+    }
+
+    @Override
+    public void userExchange(UserItemParam param) {
+        if (Objects.isNull(param.getId()) || Objects.isNull(param.getItemType()) || Objects.isNull(param.getExchange())) {
+            throw ServiceException.instance(PARAM_ERROR);
+        }
+        Long userId = ContextHolder.getUserId();
+        if (ItemTypeEnum.ITEM.getCode().equals(param.getItemType())) {
+            UserItemCollectDO userItemCollectDO = userItemCollectService.getById(param.getId());
+            if (Objects.isNull(userItemCollectDO) || !Objects.equals(userId, userItemCollectDO.getUserId())) {
+                throw ServiceException.instance(PARAM_ERROR);
+            }
+            userItemCollectDO.setExchange(param.getExchange());
+            userItemCollectDO.setExchangeRemark(Boolean.TRUE.equals(param.getExchange()) ? param.getExchangeRemark() : null);
+            userItemCollectService.updateById(userItemCollectDO);
+            return;
+        }
+        if (ItemTypeEnum.SUB_ITEM.getCode().equals(param.getItemType())) {
+            UserSubItemCollectDO userSubItemCollectDO = userSubItemCollectService.getById(param.getId());
+            if (Objects.isNull(userSubItemCollectDO) || !Objects.equals(userId, userSubItemCollectDO.getUserId())) {
+                throw ServiceException.instance(PARAM_ERROR);
+            }
+            userSubItemCollectDO.setExchange(param.getExchange());
+            userSubItemCollectDO.setExchangeRemark(Boolean.TRUE.equals(param.getExchange()) ? param.getExchangeRemark() : null);
+            userSubItemCollectService.updateById(userSubItemCollectDO);
+            return;
+        }
+        throw ServiceException.instance(PARAM_ERROR);
+    }
+
+    @Override
+    public List<ExchangeUserCardVO> exchangeCards(ExchangeSearchParam param) {
+        if (Objects.isNull(param)) {
+            param = new ExchangeSearchParam();
+        }
+        int pageNo = normalizePageNo(param.getPageNo());
+        String keyword = CharSequenceUtil.trim(param.getKeyword());
+        boolean random = CharSequenceUtil.isBlank(keyword);
+        int pageSize = random ? 3 : normalizePageSize(param.getPageSize(), 5);
+        int offset = random ? 0 : (pageNo - 1) * pageSize;
+        List<ExchangeUserCardVO> cards = userItemCollectService.listExchangeUsers(keyword, offset, pageSize, random);
+        if (CollUtil.isEmpty(cards)) {
+            return List.of();
+        }
+
+        List<Long> userIds = cards.stream().map(ExchangeUserCardVO::getUserId).toList();
+        List<ExchangeItemVO> items = fillExchangeSubItems(userItemCollectService.listExchangeItemsByUserIds(userIds, keyword));
+        Map<Long, List<ExchangeItemVO>> itemMap = items.stream().collect(Collectors.groupingBy(ExchangeItemVO::getUserId));
+        for (ExchangeUserCardVO card : cards) {
+            card.setItemList(itemMap.getOrDefault(card.getUserId(), List.of()).stream().limit(3).toList());
+        }
+        return cards;
+    }
+
+    @Override
+    public List<ExchangeItemVO> exchangeUserItems(ExchangeSearchParam param) {
+        if (Objects.isNull(param)) {
+            throw ServiceException.instance(PARAM_ERROR);
+        }
+        if (Objects.isNull(param.getUserId())) {
+            throw ServiceException.instance(PARAM_ERROR);
+        }
+        int pageNo = normalizePageNo(param.getPageNo());
+        int pageSize = normalizePageSize(param.getPageSize(), 10);
+        int offset = (pageNo - 1) * pageSize;
+        return fillExchangeSubItems(userItemCollectService.listExchangeItemsByUserId(param.getUserId(), offset, pageSize));
+    }
+
+    @Override
+    public List<ExchangeItemVO> myExchangeItems() {
+        return fillExchangeSubItems(userItemCollectService.listMyExchangeItems(ContextHolder.getUserId()));
+    }
+
+    private List<ExchangeItemVO> fillExchangeSubItems(List<ExchangeItemVO> items) {
+        if (CollUtil.isEmpty(items)) {
+            return items;
+        }
+        Set<Long> subItemIds = new HashSet<>();
+        for (ExchangeItemVO item : items) {
+            if (!ItemTypeEnum.SUB_ITEM.getCode().equals(item.getSourceType()) || CharSequenceUtil.isBlank(item.getSubItemId())) {
+                continue;
+            }
+            subItemIds.addAll(JSONUtil.parseArray(item.getSubItemId()).toList(Long.class));
+        }
+        if (CollUtil.isEmpty(subItemIds)) {
+            return items;
+        }
+
+        Map<Long, SubItemDO> subItemMap = subItemService.listByIds(subItemIds).stream()
+                .collect(Collectors.toMap(SubItemDO::getId, Function.identity()));
+        for (ExchangeItemVO item : items) {
+            if (!ItemTypeEnum.SUB_ITEM.getCode().equals(item.getSourceType()) || CharSequenceUtil.isBlank(item.getSubItemId())) {
+                continue;
+            }
+            List<Long> ids = JSONUtil.parseArray(item.getSubItemId()).toList(Long.class);
+            List<SubItemDO> subItems = ids.stream().map(subItemMap::get).filter(Objects::nonNull).toList();
+            if (CollUtil.isEmpty(subItems)) {
+                continue;
+            }
+            item.setItemName(subItems.stream().map(SubItemDO::getName).collect(Collectors.joining("、")));
+            item.setItemImg(subItems.get(0).getImg());
+        }
+        return items;
+    }
+
+    private int normalizePageNo(Integer pageNo) {
+        return Objects.isNull(pageNo) || pageNo < 1 ? 1 : pageNo;
+    }
+
+    private int normalizePageSize(Integer pageSize, int defaultSize) {
+        if (Objects.isNull(pageSize) || pageSize < 1) {
+            return defaultSize;
+        }
+        return Math.min(pageSize, 20);
     }
 
     @Override

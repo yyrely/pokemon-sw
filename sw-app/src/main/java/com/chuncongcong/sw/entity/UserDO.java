@@ -5,7 +5,6 @@ import com.chuncongcong.framework.bean.BaseDO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-
 @Data
 @TableName("sw_user")
 @EqualsAndHashCode(callSuper = true)
@@ -18,6 +17,8 @@ public class UserDO extends BaseDO {
     private Integer gender;
 
     private String mobile;
+
+    private String contact;
 
     private String openId;
 

@@ -1,7 +1,10 @@
 package com.chuncongcong.sw.biz.service;
 
+import com.chuncongcong.sw.bean.param.ExchangeSearchParam;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
+import com.chuncongcong.sw.bean.vo.ExchangeItemVO;
+import com.chuncongcong.sw.bean.vo.ExchangeUserCardVO;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
@@ -33,6 +36,14 @@ public interface ItemBizService {
     void userSaveOrUpdate(UserItemParam param);
 
     void userDelete(UserItemParam param);
+
+    void userExchange(UserItemParam param);
+
+    List<ExchangeUserCardVO> exchangeCards(ExchangeSearchParam param);
+
+    List<ExchangeItemVO> exchangeUserItems(ExchangeSearchParam param);
+
+    List<ExchangeItemVO> myExchangeItems();
 
     List<ItemInfoVO> infoList(ItemParam param);
 

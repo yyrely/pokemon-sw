@@ -15,37 +15,24 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 public class UserSubItemCollectDO extends BaseDO {
 
-    /**
-     * 用户ID
-     */
     private Long userId;
 
-    /**
-     * 物品ID
-     */
     private Long itemId;
 
-    /**
-     * 子物品ID
-     */
     private String subItemId;
 
-    /**
-     * 收集时间
-     */
     @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private LocalDate collectDate;
 
-    /**
-     * 收集价格
-     */
     @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private BigDecimal collectPrice;
 
-    /**
-     * 备注
-     */
     @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String remark;
 
+    @TableField("exchange_status")
+    private Boolean exchange;
+
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
+    private String exchangeRemark;
 }

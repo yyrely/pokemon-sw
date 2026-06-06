@@ -80,4 +80,123 @@
         order by reprint_date
         LIMIT 0,20
     </select>
+
+    <select id="listExchangeUsers" resultType="com.chuncongcong.sw.bean.vo.ExchangeUserCardVO">
+        SELECT
+            u.id AS user_id,
+            ANY_VALUE(u.username) AS username,
+            ANY_VALUE(u.head_img_url) AS head_img_url,
+            ANY_VALUE(u.contact) AS contact,
+            COUNT(uic.id) AS exchange_count
+        FROM (
+            SELECT id, user_id, item_id, NULL AS sub_item_id, 1 AS source_type, update_time, create_time FROM sw_user_item_collect
+            WHERE deleted = 0 AND exchange_status = 1
+            UNION ALL
+            SELECT id, user_id, item_id, sub_item_id, 2 AS source_type, update_time, create_time FROM sw_user_sub_item_collect
+            WHERE deleted = 0 AND exchange_status = 1
+        ) uic
+            INNER JOIN sw_user u ON u.id = uic.user_id AND u.deleted = 0
+            INNER JOIN sw_item i ON i.id = uic.item_id AND i.deleted = 0
+        WHERE
+            1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND i.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        GROUP BY u.id
+        <choose>
+            <when test="random != null and random">
+                ORDER BY RAND()
+            </when>
+            <otherwise>
+                ORDER BY MAX(uic.update_time) DESC, MAX(uic.create_time) DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="listExchangeItemsByUserIds" resultType="com.chuncongcong.sw.bean.vo.ExchangeItemVO">
+        SELECT
+            uic.id AS collect_id,
+            uic.user_id AS user_id,
+            i.id AS item_id,
+            uic.source_type,
+            uic.sub_item_id,
+            i.name AS item_name,
+            i.img AS item_img,
+            uic.collect_date,
+            uic.collect_price,
+            uic.remark,
+            uic.exchange_remark
+        FROM (
+            SELECT id, user_id, item_id, NULL AS sub_item_id, 1 AS source_type, collect_date, collect_price, remark, exchange_remark, update_time, create_time FROM sw_user_item_collect
+            WHERE deleted = 0 AND exchange_status = 1
+            UNION ALL
+            SELECT id, user_id, item_id, sub_item_id, 2 AS source_type, collect_date, collect_price, remark, exchange_remark, update_time, create_time FROM sw_user_sub_item_collect
+            WHERE deleted = 0 AND exchange_status = 1
+        ) uic
+            INNER JOIN sw_item i ON i.id = uic.item_id AND i.deleted = 0
+        WHERE
+            uic.user_id IN
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        <if test="keyword != null and keyword != ''">
+            AND i.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        ORDER BY i.region_id, i.sort, i.id, uic.source_type, uic.update_time DESC, uic.create_time DESC
+    </select>
+
+    <select id="listExchangeItemsByUserId" resultType="com.chuncongcong.sw.bean.vo.ExchangeItemVO">
+        SELECT
+            uic.id AS collect_id,
+            uic.user_id AS user_id,
+            i.id AS item_id,
+            uic.source_type,
+            uic.sub_item_id,
+            i.name AS item_name,
+            i.img AS item_img,
+            uic.collect_date,
+            uic.collect_price,
+            uic.remark,
+            uic.exchange_remark
+        FROM (
+            SELECT id, user_id, item_id, NULL AS sub_item_id, 1 AS source_type, collect_date, collect_price, remark, exchange_remark, update_time, create_time FROM sw_user_item_collect
+            WHERE deleted = 0 AND exchange_status = 1
+            UNION ALL
+            SELECT id, user_id, item_id, sub_item_id, 2 AS source_type, collect_date, collect_price, remark, exchange_remark, update_time, create_time FROM sw_user_sub_item_collect
+            WHERE deleted = 0 AND exchange_status = 1
+        ) uic
+            INNER JOIN sw_item i ON i.id = uic.item_id AND i.deleted = 0
+        WHERE
+            uic.user_id = #{userId}
+        ORDER BY i.region_id, i.sort, i.id, uic.source_type, uic.update_time DESC, uic.create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="listMyExchangeItems" resultType="com.chuncongcong.sw.bean.vo.ExchangeItemVO">
+        SELECT
+            uic.id AS collect_id,
+            uic.user_id AS user_id,
+            i.id AS item_id,
+            uic.source_type,
+            uic.sub_item_id,
+            i.name AS item_name,
+            i.img AS item_img,
+            uic.collect_date,
+            uic.collect_price,
+            uic.remark,
+            uic.exchange_remark,
+            uic.exchange_status AS exchange
+        FROM (
+            SELECT id, user_id, item_id, NULL AS sub_item_id, 1 AS source_type, collect_date, collect_price, remark, exchange_remark, exchange_status, update_time, create_time FROM sw_user_item_collect
+            WHERE deleted = 0
+            UNION ALL
+            SELECT id, user_id, item_id, sub_item_id, 2 AS source_type, collect_date, collect_price, remark, exchange_remark, exchange_status, update_time, create_time FROM sw_user_sub_item_collect
+            WHERE deleted = 0
+        ) uic
+            INNER JOIN sw_item i ON i.id = uic.item_id AND i.deleted = 0
+        WHERE
+            uic.user_id = #{userId}
+        ORDER BY i.region_id, i.sort, i.id, uic.source_type, uic.update_time DESC, uic.create_time DESC
+    </select>
 </mapper>
