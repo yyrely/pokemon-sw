@@ -11,5 +11,9 @@ public interface UserBizService {
 
     void update(UserParam param);
 
+    void updateCollectMode(UserParam param);
+
+    void completeOnboarding(UserParam param);
+
     UserDO getById(Long userId);
 }

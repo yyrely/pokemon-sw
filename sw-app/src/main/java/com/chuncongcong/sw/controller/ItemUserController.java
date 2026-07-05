@@ -85,8 +85,8 @@ public class ItemUserController {
 
     @Operation(summary = "List my collected records for exchange management")
     @PostMapping("/exchange/my/items")
-    public ApiListResponse<ExchangeItemVO> myExchangeItems() {
-        return ApiListResponse.success(itemBizService.myExchangeItems());
+    public ApiListResponse<ExchangeItemVO> myExchangeItems(@RequestBody(required = false) ExchangeSearchParam param) {
+        return ApiListResponse.success(itemBizService.myExchangeItems(param));
     }
 
     @Operation(summary = "Collect all")

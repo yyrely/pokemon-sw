@@ -1,0 +1,312 @@
+2026-06-19 21:47:04.263 [background-preinit] [] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-06-19 21:47:04.309 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Starting SwAppApplication using Java 17.0.12 with PID 26464 (D:\workspace\pw\pokemon-sw\sw-app\target\classes started by 73495 in D:\workspace\pw\pokemon-sw)
+2026-06-19 21:47:04.310 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - The following 1 profile is active: "dev"
+2026-06-19 21:47:05.212 [main] [] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=d3c7cfa2-4a74-3a7a-a598-8bbaab4d92f2
+2026-06-19 21:47:05.479 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8088 (http)
+2026-06-19 21:47:05.490 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8088"]
+2026-06-19 21:47:05.492 [main] [] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-19 21:47:05.492 [main] [] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-06-19 21:47:05.544 [main] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-06-19 21:47:05.544 [main] [] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1195 ms
+2026-06-19 21:47:06.799 [main] [] INFO  c.b.m.e.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@df5f5c0
+2026-06-19 21:47:07.999 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 21:47:08.050 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8088"]
+2026-06-19 21:47:08.059 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8088 (http) with context path '/api'
+2026-06-19 21:47:09.169 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 21:47:09.177 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Started SwAppApplication in 6.549 seconds (process running for 7.715)
+2026-06-19 21:47:48.576 [http-nio-8088-exec-2] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19 21:47:48.576 [http-nio-8088-exec-2] [] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-06-19 21:47:48.577 [http-nio-8088-exec-2] [] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-06-19 21:47:48.777 [http-nio-8088-exec-2] [d41d3e745a5a49e8b51dfa202d4d817c] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Starting...
+2026-06-19 21:47:49.124 [http-nio-8088-exec-2] [d41d3e745a5a49e8b51dfa202d4d817c] INFO  com.zaxxer.hikari.pool.HikariPool - HikariCP - Added connection com.mysql.cj.jdbc.ConnectionImpl@6d95f46d
+2026-06-19 21:47:49.126 [http-nio-8088-exec-2] [d41d3e745a5a49e8b51dfa202d4d817c] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Start completed.
+2026-06-19 21:54:52.505 [SpringApplicationShutdownHook] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-06-19 21:54:52.589 [tomcat-shutdown] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-06-19 21:54:52.594 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown initiated...
+2026-06-19 21:54:52.597 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown completed.
+2026-06-19 21:57:54.010 [background-preinit] [] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-06-19 21:57:54.053 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Starting SwAppApplication using Java 17.0.12 with PID 28660 (D:\workspace\pw\pokemon-sw\sw-app\target\classes started by 73495 in D:\workspace\pw\pokemon-sw)
+2026-06-19 21:57:54.054 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - The following 1 profile is active: "dev"
+2026-06-19 21:57:54.765 [main] [] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c8b8ac9c-18f1-35dd-ba62-ddee869c07bf
+2026-06-19 21:57:55.000 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8088 (http)
+2026-06-19 21:57:55.009 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8088"]
+2026-06-19 21:57:55.010 [main] [] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-19 21:57:55.010 [main] [] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-06-19 21:57:55.058 [main] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-06-19 21:57:55.058 [main] [] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 973 ms
+2026-06-19 21:57:56.223 [main] [] INFO  c.b.m.e.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@df5f5c0
+2026-06-19 21:57:57.424 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 21:57:57.476 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8088"]
+2026-06-19 21:57:57.484 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8088 (http) with context path '/api'
+2026-06-19 21:57:58.592 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 21:57:58.599 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Started SwAppApplication in 6.148 seconds (process running for 6.807)
+2026-06-19 21:58:30.109 [SpringApplicationShutdownHook] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-06-19 21:58:30.196 [tomcat-shutdown] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-06-19 21:58:34.498 [background-preinit] [] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-06-19 21:58:34.541 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Starting SwAppApplication using Java 17.0.12 with PID 8008 (D:\workspace\pw\pokemon-sw\sw-app\target\classes started by 73495 in D:\workspace\pw\pokemon-sw)
+2026-06-19 21:58:34.541 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - The following 1 profile is active: "dev"
+2026-06-19 21:58:35.236 [main] [] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c8b8ac9c-18f1-35dd-ba62-ddee869c07bf
+2026-06-19 21:58:35.464 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8088 (http)
+2026-06-19 21:58:35.474 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8088"]
+2026-06-19 21:58:35.475 [main] [] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-19 21:58:35.476 [main] [] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-06-19 21:58:35.520 [main] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-06-19 21:58:35.521 [main] [] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 946 ms
+2026-06-19 21:58:36.665 [main] [] INFO  c.b.m.e.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@df5f5c0
+2026-06-19 21:58:37.873 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 21:58:37.927 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8088"]
+2026-06-19 21:58:37.937 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8088 (http) with context path '/api'
+2026-06-19 21:58:39.056 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 21:58:39.064 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Started SwAppApplication in 6.094 seconds (process running for 6.727)
+2026-06-19 22:00:12.932 [http-nio-8088-exec-3] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19 22:00:12.932 [http-nio-8088-exec-3] [] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-06-19 22:00:12.934 [http-nio-8088-exec-3] [] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2026-06-19 22:00:12.971 [http-nio-8088-exec-3] [3120f3e63dd14578aa360a9e0294d82f] ERROR c.c.f.config.GlobalExceptionHandler - Required request body is missing: public com.chuncongcong.framework.response.ApiResponse<com.chuncongcong.sw.bean.vo.WxLoginVO> com.chuncongcong.sw.controller.UserController.wxLogin(com.chuncongcong.sw.bean.param.WxLoginParam)
+org.springframework.http.converter.HttpMessageNotReadableException: Required request body is missing: public com.chuncongcong.framework.response.ApiResponse<com.chuncongcong.sw.bean.vo.WxLoginVO> com.chuncongcong.sw.controller.UserController.wxLogin(com.chuncongcong.sw.bean.param.WxLoginParam)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.readWithMessageConverters(RequestResponseBodyMethodProcessor.java:179)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.resolveArgument(RequestResponseBodyMethodProcessor.java:150)
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:227)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:181)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at com.chuncongcong.framework.filter.TraceIdFilter.doFilter(TraceIdFilter.java:24)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-06-19 22:00:48.915 [http-nio-8088-exec-6] [c57cddfda6c745cab20485da8491eca0] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Starting...
+2026-06-19 22:00:49.221 [http-nio-8088-exec-6] [c57cddfda6c745cab20485da8491eca0] INFO  com.zaxxer.hikari.pool.HikariPool - HikariCP - Added connection com.mysql.cj.jdbc.ConnectionImpl@522dae07
+2026-06-19 22:00:49.223 [http-nio-8088-exec-6] [c57cddfda6c745cab20485da8491eca0] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Start completed.
+2026-06-19 22:03:39.725 [http-nio-8088-exec-8] [98bfdb5da9d24166b587d6aeb6d08763] INFO  c.c.sw.importer.PokeApiImportRunner - Imported pokemon #1 bulbasaur
+2026-06-19 22:06:26.243 [http-nio-8088-exec-8] [98bfdb5da9d24166b587d6aeb6d08763] INFO  c.c.sw.importer.PokeApiImportRunner - Imported pokemon #4 charmander
+2026-06-19 22:07:09.137 [SpringApplicationShutdownHook] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-06-19 22:07:39.237 [SpringApplicationShutdownHook] [] INFO  o.s.c.s.DefaultLifecycleProcessor - Shutdown phase 2147482623 ends with 1 bean still running after timeout of 30000ms: [webServerGracefulShutdown]
+2026-06-19 22:07:39.241 [http-nio-8088-exec-8] [98bfdb5da9d24166b587d6aeb6d08763] ERROR c.c.f.config.GlobalExceptionHandler - Interrupted while fetching PokeAPI path /pokemon/squirtle
+java.lang.IllegalStateException: Interrupted while fetching PokeAPI path /pokemon/squirtle
+	at com.chuncongcong.sw.importer.PokeApiImportRunner.getJson(PokeApiImportRunner.java:117)
+	at com.chuncongcong.sw.importer.PokeApiImportRunner.importGeneration(PokeApiImportRunner.java:78)
+	at com.chuncongcong.sw.importer.PokeApiImportRunner.importAll(PokeApiImportRunner.java:59)
+	at com.chuncongcong.sw.controller.PokemonImportController.importPokeApi(PokemonImportController.java:28)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at com.chuncongcong.framework.filter.TraceIdFilter.doFilter(TraceIdFilter.java:24)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: java.lang.InterruptedException: null
+	at java.base/java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:386)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2073)
+	at java.net.http/jdk.internal.net.http.HttpClientImpl.send(HttpClientImpl.java:554)
+	at java.net.http/jdk.internal.net.http.HttpClientFacade.send(HttpClientFacade.java:123)
+	at com.chuncongcong.sw.importer.PokeApiImportRunner.getJson(PokeApiImportRunner.java:111)
+	... 56 common frames omitted
+2026-06-19 22:07:39.245 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown initiated...
+2026-06-19 22:07:39.247 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown completed.
+2026-06-19 22:07:39.251 [tomcat-shutdown] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown aborted with one or more requests still active
+2026-06-19 22:08:19.615 [background-preinit] [] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-06-19 22:08:19.658 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Starting SwAppApplication using Java 17.0.12 with PID 24572 (D:\workspace\pw\pokemon-sw\sw-app\target\classes started by 73495 in D:\workspace\pw\pokemon-sw)
+2026-06-19 22:08:19.659 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - The following 1 profile is active: "dev"
+2026-06-19 22:08:20.382 [main] [] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c8b8ac9c-18f1-35dd-ba62-ddee869c07bf
+2026-06-19 22:08:20.627 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8088 (http)
+2026-06-19 22:08:20.637 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8088"]
+2026-06-19 22:08:20.639 [main] [] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-19 22:08:20.639 [main] [] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-06-19 22:08:20.685 [main] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-06-19 22:08:20.685 [main] [] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 995 ms
+2026-06-19 22:08:21.826 [main] [] INFO  c.b.m.e.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@df5f5c0
+2026-06-19 22:08:23.054 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 22:08:23.122 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8088"]
+2026-06-19 22:08:23.132 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8088 (http) with context path '/api'
+2026-06-19 22:08:24.254 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 22:08:24.260 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Started SwAppApplication in 6.208 seconds (process running for 6.864)
+2026-06-19 22:08:27.511 [http-nio-8088-exec-1] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19 22:08:27.511 [http-nio-8088-exec-1] [] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-06-19 22:08:27.512 [http-nio-8088-exec-1] [] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-06-19 22:08:27.651 [http-nio-8088-exec-1] [fa27edb229024f34bddd85afa4ade5d3] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Starting...
+2026-06-19 22:08:27.944 [http-nio-8088-exec-1] [fa27edb229024f34bddd85afa4ade5d3] INFO  com.zaxxer.hikari.pool.HikariPool - HikariCP - Added connection com.mysql.cj.jdbc.ConnectionImpl@79b4a2d7
+2026-06-19 22:08:27.946 [http-nio-8088-exec-1] [fa27edb229024f34bddd85afa4ade5d3] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Start completed.
+2026-06-19 22:10:30.845 [HikariCP:housekeeper] [] WARN  com.zaxxer.hikari.pool.HikariPool - HikariCP - Thread starvation or clock leap detected (housekeeper delta=2m2s786ms958µs900ns).
+2026-06-19 22:10:30.875 [SpringApplicationShutdownHook] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-06-19 22:11:00.973 [SpringApplicationShutdownHook] [] INFO  o.s.c.s.DefaultLifecycleProcessor - Shutdown phase 2147482623 ends with 1 bean still running after timeout of 30000ms: [webServerGracefulShutdown]
+2026-06-19 22:11:00.977 [http-nio-8088-exec-1] [fa27edb229024f34bddd85afa4ade5d3] ERROR c.c.f.config.GlobalExceptionHandler - Interrupted while fetching PokeAPI path /pokemon/bulbasaur
+java.lang.IllegalStateException: Interrupted while fetching PokeAPI path /pokemon/bulbasaur
+	at com.chuncongcong.sw.importer.PokeApiImportRunner.getJson(PokeApiImportRunner.java:117)
+	at com.chuncongcong.sw.importer.PokeApiImportRunner.importGeneration(PokeApiImportRunner.java:78)
+	at com.chuncongcong.sw.importer.PokeApiImportRunner.importAll(PokeApiImportRunner.java:59)
+	at com.chuncongcong.sw.controller.PokemonImportController.importPokeApi(PokemonImportController.java:28)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at com.chuncongcong.framework.filter.TraceIdFilter.doFilter(TraceIdFilter.java:24)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: java.lang.InterruptedException: null
+	at java.base/java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:386)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2073)
+	at java.net.http/jdk.internal.net.http.HttpClientImpl.send(HttpClientImpl.java:554)
+	at java.net.http/jdk.internal.net.http.HttpClientFacade.send(HttpClientFacade.java:123)
+	at com.chuncongcong.sw.importer.PokeApiImportRunner.getJson(PokeApiImportRunner.java:111)
+	... 56 common frames omitted
+2026-06-19 22:11:01.021 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown initiated...
+2026-06-19 22:11:01.023 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown completed.
+2026-06-19 22:12:10.980 [background-preinit] [] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-06-19 22:12:11.025 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Starting SwAppApplication using Java 17.0.12 with PID 24188 (D:\workspace\pw\pokemon-sw\sw-app\target\classes started by 73495 in D:\workspace\pw\pokemon-sw)
+2026-06-19 22:12:11.026 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - The following 1 profile is active: "dev"
+2026-06-19 22:12:11.742 [main] [] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c8b8ac9c-18f1-35dd-ba62-ddee869c07bf
+2026-06-19 22:12:11.973 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8088 (http)
+2026-06-19 22:12:11.984 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8088"]
+2026-06-19 22:12:11.986 [main] [] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-06-19 22:12:11.986 [main] [] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-06-19 22:12:12.032 [main] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-06-19 22:12:12.032 [main] [] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 975 ms
+2026-06-19 22:12:13.255 [main] [] INFO  c.b.m.e.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@df5f5c0
+2026-06-19 22:12:14.455 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 22:12:14.507 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8088"]
+2026-06-19 22:12:14.516 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8088 (http) with context path '/api'
+2026-06-19 22:12:15.628 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-06-19 22:12:15.635 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Started SwAppApplication in 6.189 seconds (process running for 6.788)
+2026-06-19 22:12:51.829 [http-nio-8088-exec-1] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19 22:12:51.830 [http-nio-8088-exec-1] [] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-06-19 22:12:51.831 [http-nio-8088-exec-1] [] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-06-19 22:12:51.991 [http-nio-8088-exec-1] [fc6f3e67f4e0429f9cf7777947b0415e] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Starting...
+2026-06-19 22:12:52.303 [http-nio-8088-exec-1] [fc6f3e67f4e0429f9cf7777947b0415e] INFO  com.zaxxer.hikari.pool.HikariPool - HikariCP - Added connection com.mysql.cj.jdbc.ConnectionImpl@306aa959
+2026-06-19 22:12:52.305 [http-nio-8088-exec-1] [fc6f3e67f4e0429f9cf7777947b0415e] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Start completed.
+2026-06-19 22:13:49.203 [HikariCP:housekeeper] [] WARN  com.zaxxer.hikari.pool.HikariPool - HikariCP - Thread starvation or clock leap detected (housekeeper delta=56s789ms75µs401ns).
+2026-06-19 22:14:03.635 [http-nio-8088-exec-1] [fc6f3e67f4e0429f9cf7777947b0415e] INFO  c.c.sw.importer.PokeApiImportRunner - Imported pokemon #1 妙蛙種子
+2026-06-19 22:14:23.467 [http-nio-8088-exec-1] [fc6f3e67f4e0429f9cf7777947b0415e] INFO  c.c.sw.importer.PokeApiImportRunner - Imported pokemon #4 小火龍
+2026-06-19 22:16:27.349 [SpringApplicationShutdownHook] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete

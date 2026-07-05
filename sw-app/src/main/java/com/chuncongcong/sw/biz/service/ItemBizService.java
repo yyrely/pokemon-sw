@@ -43,7 +43,7 @@ public interface ItemBizService {
 
     List<ExchangeItemVO> exchangeUserItems(ExchangeSearchParam param);
 
-    List<ExchangeItemVO> myExchangeItems();
+    List<ExchangeItemVO> myExchangeItems(ExchangeSearchParam param);
 
     List<ItemInfoVO> infoList(ItemParam param);
 

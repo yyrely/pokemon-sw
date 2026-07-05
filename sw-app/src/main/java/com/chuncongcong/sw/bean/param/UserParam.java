@@ -31,4 +31,10 @@ public class UserParam {
 
     @Schema(description = "avatar")
     private String headImgUrl;
+
+    @Schema(description = "collect mode: pokedex or scale_world")
+    private String collectMode;
+
+    @Schema(description = "onboarding version")
+    private Integer onboardingVersion;
 }

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chuncongcong.sw.mapper.UserPokemonCollectMapper">
+
+    <select id="listExchangeUsers" resultType="com.chuncongcong.sw.bean.vo.ExchangeUserCardVO">
+        SELECT
+            u.id AS user_id,
+            ANY_VALUE(u.username) AS username,
+            ANY_VALUE(u.head_img_url) AS head_img_url,
+            ANY_VALUE(u.contact) AS contact,
+            COUNT(upc.id) AS exchange_count
+        FROM sw_user_pokemon_collect upc
+            INNER JOIN sw_user u ON u.id = upc.user_id AND u.deleted = 0
+            INNER JOIN sw_pokemon p ON p.id = upc.pokemon_id AND p.deleted = 0
+        WHERE upc.deleted = 0
+            AND upc.exchange_status = 1
+        <if test="keyword != null and keyword != ''">
+            AND (p.name_zh LIKE CONCAT('%', #{keyword}, '%') OR p.name_en LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        GROUP BY u.id
+        <choose>
+            <when test="random != null and random">
+                ORDER BY RAND()
+            </when>
+            <otherwise>
+                ORDER BY MAX(upc.update_time) DESC, MAX(upc.create_time) DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="listExchangeItemsByUserIds" resultType="com.chuncongcong.sw.bean.vo.ExchangeItemVO">
+        SELECT
+            upc.id AS collect_id,
+            upc.user_id AS user_id,
+            p.id AS item_id,
+            3 AS source_type,
+            NULL AS sub_item_id,
+            p.name_zh AS item_name,
+            p.local_img AS item_img,
+            upc.collect_date,
+            upc.collect_price,
+            upc.remark,
+            upc.exchange_remark
+        FROM sw_user_pokemon_collect upc
+            INNER JOIN sw_pokemon p ON p.id = upc.pokemon_id AND p.deleted = 0
+        WHERE upc.deleted = 0
+            AND upc.exchange_status = 1
+            AND upc.user_id IN
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        <if test="keyword != null and keyword != ''">
+            AND (p.name_zh LIKE CONCAT('%', #{keyword}, '%') OR p.name_en LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        ORDER BY p.region_id, p.sort, p.id, upc.update_time DESC, upc.create_time DESC
+    </select>
+
+    <select id="listExchangeItemsByUserId" resultType="com.chuncongcong.sw.bean.vo.ExchangeItemVO">
+        SELECT
+            upc.id AS collect_id,
+            upc.user_id AS user_id,
+            p.id AS item_id,
+            3 AS source_type,
+            NULL AS sub_item_id,
+            p.name_zh AS item_name,
+            p.local_img AS item_img,
+            upc.collect_date,
+            upc.collect_price,
+            upc.remark,
+            upc.exchange_remark
+        FROM sw_user_pokemon_collect upc
+            INNER JOIN sw_pokemon p ON p.id = upc.pokemon_id AND p.deleted = 0
+        WHERE upc.deleted = 0
+            AND upc.exchange_status = 1
+            AND upc.user_id = #{userId}
+        ORDER BY p.region_id, p.sort, p.id, upc.update_time DESC, upc.create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="listMyExchangeItems" resultType="com.chuncongcong.sw.bean.vo.ExchangeItemVO">
+        SELECT
+            upc.id AS collect_id,
+            upc.user_id AS user_id,
+            p.id AS item_id,
+            3 AS source_type,
+            NULL AS sub_item_id,
+            p.name_zh AS item_name,
+            p.local_img AS item_img,
+            upc.collect_date,
+            upc.collect_price,
+            upc.remark,
+            upc.exchange_remark,
+            upc.exchange_status AS exchange
+        FROM sw_user_pokemon_collect upc
+            INNER JOIN sw_pokemon p ON p.id = upc.pokemon_id AND p.deleted = 0
+        WHERE upc.deleted = 0
+            AND upc.user_id = #{userId}
+        ORDER BY p.region_id, p.sort, p.id, upc.update_time DESC, upc.create_time DESC
+    </select>
+</mapper>

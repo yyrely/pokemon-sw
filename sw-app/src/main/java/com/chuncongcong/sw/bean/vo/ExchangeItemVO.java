@@ -18,7 +18,7 @@ public class ExchangeItemVO {
     @Schema(description = "item id")
     private Long itemId;
 
-    @Schema(description = "source type: 1 main item, 2 sub item")
+    @Schema(description = "source type: 1 main item, 2 sub item, 3 pokemon collect")
     private Integer sourceType;
 
     @Schema(description = "sub item id json")

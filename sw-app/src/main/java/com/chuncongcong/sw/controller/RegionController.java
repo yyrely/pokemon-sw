@@ -37,8 +37,8 @@ public class RegionController {
     @Operation(summary = "查询所有地区列表")
     @IgnoreLogin
     @PostMapping("/list")
-    public ApiListResponse<RegionVO> list() {
-        return ApiListResponse.success(reginBizService.listAndCollect());
+    public ApiListResponse<RegionVO> list(@RequestBody(required = false) RegionParam param) {
+        return ApiListResponse.success(reginBizService.listAndCollect(param));
     }
 
     @Operation(summary = "地区物品收集统计")

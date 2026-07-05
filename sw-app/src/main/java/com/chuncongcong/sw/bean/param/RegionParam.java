@@ -29,4 +29,7 @@ public class RegionParam {
     @Schema(description = "排序", example = "1")
     private Integer sort;
 
+    @Schema(description = "collect mode: pokedex or scale_world")
+    private String collectMode;
+
 }

@@ -6,6 +6,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
 import com.chuncongcong.framework.exception.ServiceException;
 import com.chuncongcong.framework.util.ContextHolder;
+import com.chuncongcong.sw.bean.enums.CollectModeEnum;
 import com.chuncongcong.sw.bean.enums.ItemTypeEnum;
 import com.chuncongcong.sw.bean.param.ExchangeSearchParam;
 import com.chuncongcong.sw.bean.param.ItemParam;
@@ -20,6 +21,7 @@ import com.chuncongcong.sw.bean.vo.SubItemVO;
 import com.chuncongcong.sw.bean.vo.TopVO;
 import com.chuncongcong.sw.bean.vo.UserItemVO;
 import com.chuncongcong.sw.biz.service.ItemBizService;
+import com.chuncongcong.sw.biz.service.PokedexScaleSyncService;
 import com.chuncongcong.sw.entity.ItemDO;
 import com.chuncongcong.sw.entity.ItemInfoDO;
 import com.chuncongcong.sw.entity.SubItemDO;
@@ -32,6 +34,7 @@ import com.chuncongcong.sw.service.ItemService;
 import com.chuncongcong.sw.service.SubItemService;
 import com.chuncongcong.sw.service.UserItemCollectService;
 import com.chuncongcong.sw.service.UserItemSummaryService;
+import com.chuncongcong.sw.service.UserPokemonCollectService;
 import com.chuncongcong.sw.service.UserService;
 import com.chuncongcong.sw.service.UserSubItemCollectService;
 import jakarta.annotation.Resource;
@@ -76,6 +79,10 @@ public class ItemBizServiceImpl implements ItemBizService {
     private UserItemSummaryService userItemSummaryService;
     @Resource
     private UserService userService;
+    @Resource
+    private PokedexScaleSyncService pokedexScaleSyncService;
+    @Resource
+    private UserPokemonCollectService userPokemonCollectService;
 
     @Override
     public List<ItemDO> list(ItemParam param) {
@@ -430,6 +437,7 @@ public class ItemBizServiceImpl implements ItemBizService {
             if (Objects.isNull(id)) {
                 itemCollectSummary(userItemCollectDO);
             }
+            syncPokedexItemCollectIfNeeded(userItemCollectService.getById(userItemCollectDO.getId()));
         } else if (ItemTypeEnum.SUB_ITEM.getCode().equals(param.getItemType())) {
             UserSubItemCollectDO userSubItemCollectDO = BeanUtil.copyProperties(param, UserSubItemCollectDO.class);
             userSubItemCollectDO.setUserId(ContextHolder.getUserId());
@@ -443,7 +451,26 @@ public class ItemBizServiceImpl implements ItemBizService {
             if (Objects.isNull(id)) {
                 subItemCollectSummary(userSubItemCollectDO);
             }
+            syncPokedexSubItemCollectIfNeeded(userSubItemCollectService.getById(userSubItemCollectDO.getId()));
         }
+    }
+
+    private void syncPokedexItemCollectIfNeeded(UserItemCollectDO record) {
+        if (Objects.nonNull(record) && isPokedexScaleSynced(record.getUserId())) {
+            pokedexScaleSyncService.syncItemCollect(record);
+        }
+    }
+
+    private void syncPokedexSubItemCollectIfNeeded(UserSubItemCollectDO record) {
+        if (Objects.nonNull(record) && isPokedexScaleSynced(record.getUserId())) {
+            pokedexScaleSyncService.syncSubItemCollect(record);
+        }
+    }
+
+    private boolean isPokedexScaleSynced(Long userId) {
+        UserDO user = userService.getById(userId);
+        return Objects.nonNull(user)
+                && Objects.equals(PokedexScaleSyncServiceImpl.SYNC_STATUS_SYNCED, user.getPokemonCollectSyncStatus());
     }
 
     private void subItemCollectSummary(UserSubItemCollectDO userItemCollectDO) {
@@ -506,14 +533,22 @@ public class ItemBizServiceImpl implements ItemBizService {
                 throw ServiceException.instance(PARAM_ERROR);
             }
             itemId = userItemCollectDO.getItemId();
+            Long userId = userItemCollectDO.getUserId();
             userItemCollectService.removeById(param.getId());
+            if (isPokedexScaleSynced(userId)) {
+                pokedexScaleSyncService.deleteItemCollectSource(userId, userItemCollectDO.getId());
+            }
         } else if (ItemTypeEnum.SUB_ITEM.getCode().equals(param.getItemType())) {
             UserSubItemCollectDO userSubItemCollectDO = userSubItemCollectService.getById(param.getId());
             if (Objects.isNull(userSubItemCollectDO)) {
                 throw ServiceException.instance(PARAM_ERROR);
             }
             itemId = userSubItemCollectDO.getItemId();
+            Long userId = userSubItemCollectDO.getUserId();
             userSubItemCollectService.removeById(param.getId());
+            if (isPokedexScaleSynced(userId)) {
+                pokedexScaleSyncService.deleteSubItemCollectSource(userId, userSubItemCollectDO.getId());
+            }
         } else {
             throw ServiceException.instance(PARAM_ERROR);
         }
@@ -578,15 +613,25 @@ public class ItemBizServiceImpl implements ItemBizService {
         int pageNo = normalizePageNo(param.getPageNo());
         String keyword = CharSequenceUtil.trim(param.getKeyword());
         boolean random = CharSequenceUtil.isBlank(keyword);
-        int pageSize = random ? 3 : normalizePageSize(param.getPageSize(), 5);
+        int pageSize = normalizePageSize(param.getPageSize(), random ? 3 : 5);
         int offset = random ? 0 : (pageNo - 1) * pageSize;
-        List<ExchangeUserCardVO> cards = userItemCollectService.listExchangeUsers(keyword, offset, pageSize, random);
+        List<ExchangeUserCardVO> cards = mergeExchangeUserCards(
+                userItemCollectService.listExchangeUsers(keyword, offset, pageSize, random),
+                userPokemonCollectService.listExchangeUsers(keyword, offset, pageSize, random));
         if (CollUtil.isEmpty(cards)) {
             return List.of();
         }
 
         List<Long> userIds = cards.stream().map(ExchangeUserCardVO::getUserId).toList();
-        List<ExchangeItemVO> items = fillExchangeSubItems(userItemCollectService.listExchangeItemsByUserIds(userIds, keyword));
+        List<ExchangeItemVO> items = new ArrayList<>();
+        List<ExchangeItemVO> scaleWorldItems = fillExchangeSubItems(userItemCollectService.listExchangeItemsByUserIds(userIds, keyword));
+        if (CollUtil.isNotEmpty(scaleWorldItems)) {
+            items.addAll(scaleWorldItems);
+        }
+        List<ExchangeItemVO> pokemonItems = userPokemonCollectService.listExchangeItemsByUserIds(userIds, keyword);
+        if (CollUtil.isNotEmpty(pokemonItems)) {
+            items.addAll(pokemonItems);
+        }
         Map<Long, List<ExchangeItemVO>> itemMap = items.stream().collect(Collectors.groupingBy(ExchangeItemVO::getUserId));
         for (ExchangeUserCardVO card : cards) {
             card.setItemList(itemMap.getOrDefault(card.getUserId(), List.of()).stream().limit(3).toList());
@@ -605,12 +650,54 @@ public class ItemBizServiceImpl implements ItemBizService {
         int pageNo = normalizePageNo(param.getPageNo());
         int pageSize = normalizePageSize(param.getPageSize(), 10);
         int offset = (pageNo - 1) * pageSize;
-        return fillExchangeSubItems(userItemCollectService.listExchangeItemsByUserId(param.getUserId(), offset, pageSize));
+        List<ExchangeItemVO> scaleWorldItems = fillExchangeSubItems(
+                userItemCollectService.listExchangeItemsByUserId(param.getUserId(), offset, pageSize));
+        List<ExchangeItemVO> pokemonItems = userPokemonCollectService.listExchangeItemsByUserId(param.getUserId(), offset, pageSize);
+        List<ExchangeItemVO> result = new ArrayList<>();
+        if (CollUtil.isNotEmpty(scaleWorldItems)) {
+            result.addAll(scaleWorldItems);
+        }
+        if (CollUtil.isNotEmpty(pokemonItems)) {
+            result.addAll(pokemonItems);
+        }
+        return result;
     }
 
     @Override
-    public List<ExchangeItemVO> myExchangeItems() {
+    public List<ExchangeItemVO> myExchangeItems(ExchangeSearchParam param) {
+        if (isPokedexMode(Objects.isNull(param) ? null : param.getCollectMode())) {
+            return userPokemonCollectService.listMyExchangeItems(ContextHolder.getUserId());
+        }
         return fillExchangeSubItems(userItemCollectService.listMyExchangeItems(ContextHolder.getUserId()));
+    }
+
+    private List<ExchangeUserCardVO> mergeExchangeUserCards(List<ExchangeUserCardVO> scaleWorldCards,
+                                                            List<ExchangeUserCardVO> pokemonCards) {
+        Map<Long, ExchangeUserCardVO> cardMap = new java.util.LinkedHashMap<>();
+        mergeExchangeUserCards(cardMap, scaleWorldCards);
+        mergeExchangeUserCards(cardMap, pokemonCards);
+        return new ArrayList<>(cardMap.values());
+    }
+
+    private void mergeExchangeUserCards(Map<Long, ExchangeUserCardVO> cardMap, List<ExchangeUserCardVO> cards) {
+        if (CollUtil.isEmpty(cards)) {
+            return;
+        }
+        for (ExchangeUserCardVO card : cards) {
+            ExchangeUserCardVO existing = cardMap.get(card.getUserId());
+            if (Objects.isNull(existing)) {
+                cardMap.put(card.getUserId(), card);
+                continue;
+            }
+            existing.setExchangeCount(nullToZero(existing.getExchangeCount()) + nullToZero(card.getExchangeCount()));
+        }
+    }
+
+    private int nullToZero(Integer value) {
+        return Objects.isNull(value) ? 0 : value;
+    }
+    private boolean isPokedexMode(String collectMode) {
+        return Objects.equals(CollectModeEnum.POKEDEX.getCode(), collectMode);
     }
 
     private List<ExchangeItemVO> fillExchangeSubItems(List<ExchangeItemVO> items) {

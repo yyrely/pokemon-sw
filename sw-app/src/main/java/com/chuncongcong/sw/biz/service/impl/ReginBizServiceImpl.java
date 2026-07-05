@@ -14,12 +14,28 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import static com.chuncongcong.framework.exception.ServiceErrorEnum.PARAM_ERROR;
 
 @Service
 public class ReginBizServiceImpl implements ReginBizService {
+
+    private static final String MODE_POKEDEX = "pokedex";
+    private static final String MODE_SCALE_WORLD = "scale_world";
+    private static final Set<String> POKEDEX_HIDDEN_REGIONS = Set.of(
+            "HISUI", "HISUI REGION", "\u6D17\u7FE0", "\u6D17\u7FE0\u5730\u533A"
+    );
+    private static final Set<String> SCALE_WORLD_HIDDEN_REGIONS = Set.of(
+            "UNOVA", "UNOVA REGION", "\u5408\u4F17", "\u5408\u4F17\u5730\u533A",
+            "ALOLA", "ALOLA REGION", "\u963F\u7F57\u62C9", "\u963F\u7F57\u62C9\u5730\u533A"
+    );
 
     @Resource
     private RegionService regionService;
@@ -28,14 +44,14 @@ public class ReginBizServiceImpl implements ReginBizService {
 
     @Override
     public RegionVO info(RegionParam param) {
-        if(Objects.isNull(param.getId())) {
+        if (Objects.isNull(param.getId())) {
             throw ServiceException.instance(PARAM_ERROR);
         }
         RegionDO regionDO = regionService.getById(param.getId());
         RegionVO regionVO = BeanUtil.copyProperties(regionDO, RegionVO.class);
         Map<Long, ReginItemCountVO> itemCountVOMap = itemBizService.userCountByRegions(Collections.singletonList(regionDO.getId()));
         ReginItemCountVO reginItemCountVO = itemCountVOMap.get(regionDO.getId());
-        if(Objects.nonNull(reginItemCountVO)) {
+        if (Objects.nonNull(reginItemCountVO)) {
             regionVO.setCount(reginItemCountVO.getCount());
             regionVO.setCollectCount(reginItemCountVO.getCollectCount());
         }
@@ -43,15 +59,18 @@ public class ReginBizServiceImpl implements ReginBizService {
     }
 
     @Override
-    public List<RegionVO> listAndCollect() {
-        List<RegionDO> regionList = regionService.listOrderBySort();
+    public List<RegionVO> listAndCollect(RegionParam param) {
+        String collectMode = Objects.nonNull(param) ? param.getCollectMode() : null;
+        List<RegionDO> regionList = regionService.listOrderBySort().stream()
+                .filter(regionDO -> visibleInCollectMode(regionDO, collectMode))
+                .toList();
         List<RegionVO> regionVOList = new ArrayList<>();
 
         Map<Long, ReginItemCountVO> reginItemCountVOMap = itemBizService.userCountByRegions(regionList.stream().map(RegionDO::getId).toList());
         for (RegionDO regionDO : regionList) {
             RegionVO regionVO = BeanUtil.copyProperties(regionDO, RegionVO.class);
             ReginItemCountVO reginItemCountVO = reginItemCountVOMap.get(regionDO.getId());
-            if(Objects.nonNull(reginItemCountVO)) {
+            if (Objects.nonNull(reginItemCountVO)) {
                 regionVO.setCount(reginItemCountVO.getCount());
                 regionVO.setCollectCount(reginItemCountVO.getCollectCount());
             }
@@ -60,13 +79,32 @@ public class ReginBizServiceImpl implements ReginBizService {
         return regionVOList;
     }
 
+    private boolean visibleInCollectMode(RegionDO regionDO, String collectMode) {
+        if (Objects.isNull(regionDO)) {
+            return false;
+        }
+        Set<String> hiddenRegions;
+        if (MODE_SCALE_WORLD.equals(collectMode)) {
+            hiddenRegions = SCALE_WORLD_HIDDEN_REGIONS;
+        } else if (MODE_POKEDEX.equals(collectMode)) {
+            hiddenRegions = POKEDEX_HIDDEN_REGIONS;
+        } else {
+            return true;
+        }
+        return !hiddenRegions.contains(normalizeRegionKey(regionDO.getCode()))
+                && !hiddenRegions.contains(normalizeRegionKey(regionDO.getName()));
+    }
+
+    private String normalizeRegionKey(String value) {
+        return Objects.isNull(value) ? "" : value.trim().toUpperCase(Locale.ROOT);
+    }
+
     @Override
     public ReginItemCountVO collectCount(RegionParam param) {
-        if(Objects.nonNull(param.getId())) {
+        if (Objects.nonNull(param.getId())) {
             Map<Long, ReginItemCountVO> reginItemCountVOMap = itemBizService.userCountByRegions(List.of(param.getId()));
             return reginItemCountVOMap.get(param.getId());
         }
-        // 汇总
         List<RegionDO> regionDOS = regionService.listOrderBySort();
         Map<Long, ReginItemCountVO> reginItemCountVOMap = itemBizService.userCountByRegions(regionDOS.stream().map(RegionDO::getId).toList());
         ReginItemCountVO reginItemCountVO = new ReginItemCountVO();

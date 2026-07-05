@@ -17,4 +17,7 @@ public class ExchangeSearchParam {
 
     @Schema(description = "user id")
     private Long userId;
+
+    @Schema(description = "collect mode: pokedex or scale_world")
+    private String collectMode;
 }

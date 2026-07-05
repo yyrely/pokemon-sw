@@ -10,7 +10,7 @@ public interface ReginBizService {
 
     RegionVO info(RegionParam param);
 
-    List<RegionVO> listAndCollect();
+    List<RegionVO> listAndCollect(RegionParam param);
 
     ReginItemCountVO collectCount(RegionParam param);
 
