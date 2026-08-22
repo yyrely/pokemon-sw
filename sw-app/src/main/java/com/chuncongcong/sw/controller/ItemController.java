@@ -4,7 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import com.chuncongcong.framework.interceptor.IgnoreLogin;
 import com.chuncongcong.framework.response.ApiListResponse;
 import com.chuncongcong.framework.response.ApiResponse;
+import com.chuncongcong.sw.bean.param.ItemCalendarParam;
 import com.chuncongcong.sw.bean.param.ItemParam;
+import com.chuncongcong.sw.bean.vo.ItemCalendarVO;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
 import com.chuncongcong.sw.biz.service.ItemBizService;
@@ -64,6 +66,13 @@ public class ItemController {
     @PostMapping("/info/list")
     public ApiListResponse<ItemInfoVO> infoList(@RequestBody ItemParam param) {
         return ApiListResponse.success(itemBizService.infoList(param));
+    }
+
+    @Operation(summary = "新品日历")
+    @IgnoreLogin
+    @PostMapping("/calendar")
+    public ApiResponse<ItemCalendarVO> calendar(@RequestBody ItemCalendarParam param) {
+        return ApiResponse.success(itemBizService.calendar(param));
     }
 
 }
