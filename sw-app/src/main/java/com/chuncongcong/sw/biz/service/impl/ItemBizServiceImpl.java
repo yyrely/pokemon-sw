@@ -8,10 +8,14 @@ import com.chuncongcong.framework.exception.ServiceException;
 import com.chuncongcong.framework.util.ContextHolder;
 import com.chuncongcong.sw.bean.enums.ItemTypeEnum;
 import com.chuncongcong.sw.bean.param.ExchangeSearchParam;
+import com.chuncongcong.sw.bean.param.ItemCalendarParam;
 import com.chuncongcong.sw.bean.param.ItemParam;
 import com.chuncongcong.sw.bean.param.UserItemParam;
 import com.chuncongcong.sw.bean.vo.ExchangeItemVO;
 import com.chuncongcong.sw.bean.vo.ExchangeUserCardVO;
+import com.chuncongcong.sw.bean.vo.ItemCalendarEntryVO;
+import com.chuncongcong.sw.bean.vo.ItemCalendarMonthVO;
+import com.chuncongcong.sw.bean.vo.ItemCalendarVO;
 import com.chuncongcong.sw.bean.vo.ItemInfoVO;
 import com.chuncongcong.sw.bean.vo.ItemTopVO;
 import com.chuncongcong.sw.bean.vo.ItemVO;
@@ -681,6 +685,54 @@ public class ItemBizServiceImpl implements ItemBizService {
         }
         List<ItemInfoDO> itemInfoDOList = itemInfoService.listByItemId(param.getId());
         return BeanUtil.copyToList(itemInfoDOList, ItemInfoVO.class);
+    }
+
+    @Override
+    public ItemCalendarVO calendar(ItemCalendarParam param) {
+        LocalDate latestDate = itemInfoService.getLatestDate();
+        int year = Objects.nonNull(param) && Objects.nonNull(param.getYear())
+                ? param.getYear()
+                : Optional.ofNullable(latestDate).map(LocalDate::getYear).orElse(LocalDate.now().getYear());
+
+        List<ItemCalendarMonthVO> months = new ArrayList<>();
+        Map<Integer, ItemCalendarMonthVO> monthMap = new HashMap<>();
+        for (int month = 1; month <= 12; month++) {
+            ItemCalendarMonthVO monthVO = new ItemCalendarMonthVO();
+            monthVO.setMonth(month);
+            months.add(monthVO);
+            monthMap.put(month, monthVO);
+        }
+
+        List<ItemInfoDO> infoList = itemInfoService.listByYear(year);
+        Set<Long> itemIds = infoList.stream().map(ItemInfoDO::getItemId).collect(Collectors.toSet());
+        Map<Long, ItemDO> itemMap = itemIds.isEmpty()
+                ? Collections.emptyMap()
+                : itemService.listByIds(itemIds).stream()
+                        .collect(Collectors.toMap(ItemDO::getId, Function.identity()));
+
+        for (ItemInfoDO info : infoList) {
+            ItemDO item = itemMap.get(info.getItemId());
+            if (item == null || info.getDate() == null) {
+                continue;
+            }
+            ItemCalendarEntryVO entry = new ItemCalendarEntryVO();
+            entry.setItemId(item.getId());
+            entry.setItemName(item.getName());
+            entry.setItemImg(item.getImg());
+            entry.setRegionId(item.getRegionId());
+            entry.setDate(info.getDate());
+            entry.setType(info.getType());
+            entry.setPrice(info.getPrice());
+            monthMap.get(info.getDate().getMonthValue()).getItems().add(entry);
+        }
+
+        ItemCalendarVO result = new ItemCalendarVO();
+        result.setYear(year);
+        result.setLatestYear(latestDate == null ? null : latestDate.getYear());
+        result.setLatestMonth(latestDate == null ? null : latestDate.getMonthValue());
+        result.setAvailableYears(itemInfoService.listAvailableYears());
+        result.setMonths(months);
+        return result;
     }
 
     @Override
