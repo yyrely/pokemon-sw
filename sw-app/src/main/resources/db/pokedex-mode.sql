@@ -1,5 +1,5 @@
 ALTER TABLE sw_user
-    ADD COLUMN collect_mode VARCHAR(32) NULL COMMENT 'collect mode: pokedex or scale_world',
+    ADD COLUMN collect_mode VARCHAR(32) NULL DEFAULT 'scale_world' COMMENT 'collect mode: pokedex or scale_world',
     ADD COLUMN onboarding_version INT NOT NULL DEFAULT 0 COMMENT 'completed onboarding version',
     ADD COLUMN pokemon_collect_sync_status TINYINT NOT NULL DEFAULT 0 COMMENT '0 not synced, 1 synced',
     ADD COLUMN pokemon_collect_sync_time DATETIME NULL COMMENT 'last successful pokedex sync time',

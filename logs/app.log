@@ -1511,3 +1511,29 @@ Caused by: java.sql.SQLNonTransientConnectionException: Data source rejected est
 2026-07-05 22:30:06.651 [tomcat-shutdown] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
 2026-07-05 22:30:06.685 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown initiated...
 2026-07-05 22:30:06.697 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown completed.
+2026-07-05 22:36:34.213 [background-preinit] [] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-07-05 22:36:34.297 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Starting SwAppApplication using Java 17.0.12 with PID 7088 (D:\workspace\pw\pokemon-sw\sw-app\target\classes started by 73495 in D:\workspace\pw\pokemon-sw)
+2026-07-05 22:36:34.299 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - The following 1 profile is active: "dev"
+2026-07-05 22:36:36.430 [main] [] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=4d15923b-0abd-3d1f-bf70-52fdf7d0af51
+2026-07-05 22:36:37.118 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8088 (http)
+2026-07-05 22:36:37.145 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8088"]
+2026-07-05 22:36:37.149 [main] [] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-07-05 22:36:37.150 [main] [] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-07-05 22:36:37.294 [main] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-07-05 22:36:37.295 [main] [] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2908 ms
+2026-07-05 22:36:40.698 [main] [] INFO  c.b.m.e.s.MybatisPlusApplicationContextAware - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@28fa700e
+2026-07-05 22:36:42.332 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-07-05 22:36:42.509 [main] [] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8088"]
+2026-07-05 22:36:42.562 [main] [] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8088 (http) with context path '/api'
+2026-07-05 22:36:43.832 [main] [] INFO  o.s.cloud.commons.util.InetUtils - Cannot determine local hostname
+2026-07-05 22:36:43.853 [main] [] INFO  c.chuncongcong.sw.SwAppApplication - Started SwAppApplication in 12.197 seconds (process running for 13.605)
+2026-07-05 22:37:45.098 [http-nio-8088-exec-3] [] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-05 22:37:45.099 [http-nio-8088-exec-3] [] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-07-05 22:37:45.104 [http-nio-8088-exec-3] [] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 5 ms
+2026-07-05 22:37:45.519 [http-nio-8088-exec-1] [780f359af1bc45dfa2faf9c10bd60d17] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Starting...
+2026-07-05 22:37:46.239 [http-nio-8088-exec-1] [780f359af1bc45dfa2faf9c10bd60d17] INFO  com.zaxxer.hikari.pool.HikariPool - HikariCP - Added connection com.mysql.cj.jdbc.ConnectionImpl@1059f892
+2026-07-05 22:37:46.244 [http-nio-8088-exec-1] [780f359af1bc45dfa2faf9c10bd60d17] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Start completed.
+2026-07-05 23:41:37.406 [SpringApplicationShutdownHook] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-07-05 23:41:37.619 [tomcat-shutdown] [] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-07-05 23:41:37.634 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown initiated...
+2026-07-05 23:41:37.652 [SpringApplicationShutdownHook] [] INFO  com.zaxxer.hikari.HikariDataSource - HikariCP - Shutdown completed.
