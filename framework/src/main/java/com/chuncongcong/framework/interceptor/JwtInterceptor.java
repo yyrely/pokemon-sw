@@ -36,8 +36,9 @@ public class JwtInterceptor implements HandlerInterceptor {
             String token = request.getHeader(AUTHORIZATION);
             if (token != null && token.startsWith(TOKEN_PREFIX)) {
                 Long userId = JwtUtil.parseToken(token.substring(7));
-                if (userId != null) {
-                    assertUserActive(userId);
+                // 公共接口允许携带过期、被撤销或已删除用户的旧 token。
+                // 仅在 token 仍对应有效用户时注入上下文，避免阻断重新登录。
+                if (userId != null && userStatusChecker.isActive(userId)) {
                     ContextHolder.setUserId(userId);
                 }
             }
