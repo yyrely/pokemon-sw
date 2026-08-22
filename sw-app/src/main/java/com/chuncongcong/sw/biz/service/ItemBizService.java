@@ -27,6 +27,8 @@ public interface ItemBizService {
 
     List<ItemVO> listUserFirst(ItemParam param);
 
+    List<ItemVO> listWithSubItems(ItemParam param);
+
     List<ItemVO> listItemsWithCollectStatus(Boolean collectStatus);
 
     List<UserItemVO> userList(ItemParam param);

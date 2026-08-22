@@ -52,6 +52,13 @@ public class ItemController {
         return ApiListResponse.success(itemBizService.listUserFirst(param));
     }
 
+    @Operation(summary = "物品及子物品选择列表")
+    @IgnoreLogin
+    @PostMapping("/list/with/sub-items")
+    public ApiListResponse<ItemVO> listWithSubItems(@RequestBody ItemParam param) {
+        return ApiListResponse.success(itemBizService.listWithSubItems(param));
+    }
+
     @Operation(summary = "物品资讯列表")
     @IgnoreLogin
     @PostMapping("/info/list")

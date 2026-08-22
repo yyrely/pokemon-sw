@@ -165,6 +165,24 @@ public class ItemBizServiceImpl implements ItemBizService {
     }
 
     @Override
+    public List<ItemVO> listWithSubItems(ItemParam param) {
+        List<ItemDO> items = list(param);
+        if (CollUtil.isEmpty(items)) {
+            return List.of();
+        }
+        Set<Long> itemIds = items.stream().map(ItemDO::getId).collect(Collectors.toSet());
+        Map<Long, List<SubItemDO>> subItemMap = subItemService.listAll().stream()
+                .filter(subItem -> itemIds.contains(subItem.getItemId()))
+                .collect(Collectors.groupingBy(SubItemDO::getItemId));
+        return items.stream().map(item -> {
+            ItemVO vo = BeanUtil.toBean(item, ItemVO.class);
+            vo.setSubItemList(BeanUtil.copyToList(
+                    subItemMap.getOrDefault(item.getId(), List.of()), SubItemVO.class));
+            return vo;
+        }).toList();
+    }
+
+    @Override
     public List<ItemVO> listItemsWithCollectStatus(Boolean collectStatus) {
         List<UserItemCollectDO> userItemCollectDOList = userItemCollectService.listByUserId(ContextHolder.getUserId());
         List<UserSubItemCollectDO> userSubItemCollectDOS = userSubItemCollectService.listByUserId(ContextHolder.getUserId());

@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS sw_reservation (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+    user_id BIGINT NOT NULL COMMENT '用户ID',
+    item_type TINYINT NOT NULL COMMENT '项目类型：1主项目，2子项目',
+    item_id BIGINT NOT NULL COMMENT '主项目ID',
+    sub_item_id VARCHAR(1000) DEFAULT NULL COMMENT '子项目ID JSON数组',
+    reservation_type TINYINT NOT NULL COMMENT '预定类型：1全款，2定金',
+    reservation_amount DECIMAL(12, 2) NOT NULL COMMENT '预定金额',
+    balance_amount DECIMAL(12, 2) DEFAULT NULL COMMENT '尾款金额',
+    balance_due_date DATE DEFAULT NULL COMMENT '付尾款时间',
+    arrival_date DATE NOT NULL COMMENT '到货时间',
+    status TINYINT NOT NULL DEFAULT 1 COMMENT '状态：1预定中，2已转收藏',
+    converted_time DATETIME DEFAULT NULL COMMENT '转收藏时间',
+    deleted TINYINT NOT NULL DEFAULT 0 COMMENT '删除标志',
+    create_user BIGINT DEFAULT NULL,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_user BIGINT DEFAULT NULL,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_reservation_user_status_arrival (user_id, status, arrival_date),
+    KEY idx_reservation_item (item_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户预定';
