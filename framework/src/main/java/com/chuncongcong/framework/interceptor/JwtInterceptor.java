@@ -6,16 +6,20 @@ import com.chuncongcong.framework.util.ContextHolder;
 import com.chuncongcong.framework.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@Component
 public class JwtInterceptor implements HandlerInterceptor {
 
     private static final String AUTHORIZATION = "Authorization";
 
     private static final String TOKEN_PREFIX = "Bearer ";
+
+    private final UserStatusChecker userStatusChecker;
+
+    public JwtInterceptor(UserStatusChecker userStatusChecker) {
+        this.userStatusChecker = userStatusChecker;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -33,6 +37,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             if (token != null && token.startsWith(TOKEN_PREFIX)) {
                 Long userId = JwtUtil.parseToken(token.substring(7));
                 if (userId != null) {
+                    assertUserActive(userId);
                     ContextHolder.setUserId(userId);
                 }
             }
@@ -51,8 +56,15 @@ public class JwtInterceptor implements HandlerInterceptor {
             throw ServiceException.instance(ServiceErrorEnum.TOKEN_ERROR);
         }
 
+        assertUserActive(userId);
         ContextHolder.setUserId(userId);
         return true;
+    }
+
+    private void assertUserActive(Long userId) {
+        if (!userStatusChecker.isActive(userId)) {
+            throw ServiceException.instance(ServiceErrorEnum.TOKEN_ERROR);
+        }
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.chuncongcong.framework.config;
 
 import com.chuncongcong.framework.interceptor.JwtInterceptor;
+import com.chuncongcong.framework.interceptor.UserStatusChecker;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -14,6 +16,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnWebApplication
 public class WebAutoConfiguration implements WebMvcConfigurer {
 
+    private final ObjectProvider<UserStatusChecker> userStatusCheckerProvider;
+
+    public WebAutoConfiguration(ObjectProvider<UserStatusChecker> userStatusCheckerProvider) {
+        this.userStatusCheckerProvider = userStatusCheckerProvider;
+    }
+
     @Value("${file.path:/data/}")
     private String filePath;
 
@@ -23,7 +31,8 @@ public class WebAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     public JwtInterceptor jwtInterceptor() {
-        return new JwtInterceptor();
+        UserStatusChecker checker = userStatusCheckerProvider.getIfAvailable(() -> userId -> true);
+        return new JwtInterceptor(checker);
     }
 
     @Override
