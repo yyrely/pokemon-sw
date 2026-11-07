@@ -1,11 +1,17 @@
 package com.chuncongcong.sw.controller;
 
 import com.chuncongcong.framework.exception.ServiceException;
+import com.chuncongcong.framework.interceptor.IgnoreLogin;
 import com.chuncongcong.framework.response.ApiResponse;
 import com.chuncongcong.framework.util.ContextHolder;
 import com.chuncongcong.sw.bean.param.UploadParam;
+import com.chuncongcong.sw.bean.param.ItemImageUploadParam;
 import com.chuncongcong.sw.bean.vo.UploadVO;
 import com.chuncongcong.sw.biz.service.UserBizService;
+import com.chuncongcong.sw.biz.service.ItemEntryVerifier;
+import com.chuncongcong.sw.biz.service.ItemEntryNaming;
+import com.chuncongcong.sw.entity.RegionDO;
+import com.chuncongcong.sw.service.RegionService;
 import com.chuncongcong.sw.entity.UserDO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,12 +24,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -31,6 +39,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +60,9 @@ public class UploadController {
 
     @Resource
     private UserBizService userBizService;
+
+    @Resource
+    private RegionService regionService;
 
     private static final String HEAD_IMG = "headImg";
     
@@ -77,6 +89,72 @@ public class UploadController {
     // 上传频率限制 - 每用户每分钟最多上传5次
     private static final int MAX_UPLOADS_PER_MINUTE = 5;
     private static final Map<Long, Map<Long, AtomicInteger>> uploadCountMap = new ConcurrentHashMap<>();
+
+    @Operation(summary = "物品录入图片上传（验证码校验，无需登录）")
+    @IgnoreLogin
+    @PostMapping("/item/pic")
+    public ApiResponse<UploadVO> uploadItem(@Valid @ModelAttribute ItemImageUploadParam uploadParam,
+            @RequestParam(required = false) String verificationCode) {
+        ItemEntryVerifier.verify(verificationCode);
+        RegionDO region = regionService.getById(uploadParam.getRegionId());
+        if (region == null) {
+            throw new ServiceException(400, "所选地区不存在");
+        }
+        String code = ItemEntryNaming.itemCode(region, uploadParam.getCode(), uploadParam.getSort());
+        boolean subItem = uploadParam.getSubSort() != null;
+        if (subItem) {
+            code = ItemEntryNaming.subCode(code, uploadParam.getSubCode(), uploadParam.getSubSort());
+        } else if (StringUtils.hasText(uploadParam.getSubCode())) {
+            throw new ServiceException(400, "上传子物品图片时请提供子物品排序");
+        }
+        MultipartFile file = uploadParam.getFile();
+        validateFile(file);
+        if (file.getSize() > 1024 * 1024) {
+            throw new ServiceException(400, "文件大小不能超过1MB");
+        }
+        String extension = getFileExtension(file.getOriginalFilename()).toLowerCase(Locale.ROOT);
+        String relativePath = ItemEntryNaming.imageRelativePath(region, code, extension, subItem);
+        Path root = Paths.get(filePath).toAbsolutePath().normalize();
+        Path destination = root.resolve(relativePath).normalize();
+        if (!destination.startsWith(root)) {
+            throw new ServiceException(400, "非法的文件路径");
+        }
+        checkUploadRateLimit();
+        Path temporary = null;
+        try {
+            if (Files.exists(destination)) {
+                throw new ServiceException(409, "该编码的图片已存在，可直接使用该图片地址或调整编码");
+            }
+            Files.createDirectories(destination.getParent());
+            temporary = Files.createTempFile(destination.getParent(), "item-upload-", "." + extension);
+            try (InputStream stream = file.getInputStream()) {
+                Files.copy(stream, temporary, StandardCopyOption.REPLACE_EXISTING);
+            }
+            long size = Files.size(temporary);
+            Files.move(temporary, destination);
+            UploadVO result = new UploadVO();
+            result.setUrl(ItemEntryNaming.imageUrl(filePatternPrefix, region, code, extension, subItem));
+            result.setFileName(destination.getFileName().toString());
+            result.setOriginalName(file.getOriginalFilename());
+            result.setSize(size);
+            result.setContentType(file.getContentType());
+            result.setCategory(relativePath.substring(0, relativePath.lastIndexOf('/')));
+            return ApiResponse.success(result);
+        } catch (FileAlreadyExistsException e) {
+            throw new ServiceException(409, "该编码的图片已存在，可直接使用该图片地址或调整编码");
+        } catch (IOException e) {
+            log.error("物品图片上传失败", e);
+            throw new ServiceException("物品图片上传失败");
+        } finally {
+            if (temporary != null) {
+                try {
+                    Files.deleteIfExists(temporary);
+                } catch (IOException e) {
+                    log.warn("临时图片清理失败", e);
+                }
+            }
+        }
+    }
 
     @Operation(summary = "文件上传")
     @PostMapping("/pic")
@@ -226,7 +304,11 @@ public class UploadController {
      * 检查上传频率限制
      */
     private void checkUploadRateLimit() {
-        Long userId = ContextHolder.getContext().getUserId();
+        Long userId = ContextHolder.getUserId();
+        // Anonymous item entry uploads share a rate limit and never use a null map key.
+        if (userId == null) {
+            userId = -1L;
+        }
         long currentMinute = System.currentTimeMillis() / 60000; // 当前分钟时间戳
         
         uploadCountMap.putIfAbsent(userId, new ConcurrentHashMap<>());
